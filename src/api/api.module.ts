@@ -8,11 +8,12 @@ import { ControllerInfo } from '@/core/decorators/controller';
 import { di } from '@/core/di/container';
 import { LoggerService } from '@/common/logger';
 import { UsersControllerModule } from './users';
+import { AuthControllerModule } from './auth';
 import { ControllerModule } from '@/core/decorators/controller-module';
 import { ApiModule, API_MODULE_KEY } from '@/core/decorators/api-module';
 
 @ApiModule({
-  modules: [UsersControllerModule],
+  modules: [UsersControllerModule, AuthControllerModule],
 })
 @Singleton()
 export class ApiV1Module {

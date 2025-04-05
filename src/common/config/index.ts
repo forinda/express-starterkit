@@ -45,13 +45,30 @@ export interface DbConfig {
   database: string;
 }
 
+export interface CookieConfig {
+  name: string;
+  secret: string;
+  options: {
+    httpOnly: boolean;
+    secure: boolean;
+    sameSite: 'strict' | 'lax' | 'none';
+    maxAge: number;
+  };
+}
+
+export interface JWTConfig {
+  secret: string;
+  expiresIn: string;
+}
+
 @autoBind()
 @Singleton()
 export class ConfigService {
   private config: AppConfig;
   private dbConfig: DbConfig;
   private serverConfig: ServerConfig;
-
+  private cookieConfig: CookieConfig;
+  private jwtConfig: JWTConfig;
   constructor() {
     this.config = this.loadConfig();
     this.dbConfig = {
@@ -69,6 +86,21 @@ export class ConfigService {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization'],
       },
+    };
+
+    this.cookieConfig = {
+      name: process.env.COOKIE_NAME || 'auth_token',
+      secret: process.env.COOKIE_SECRET || 'secret',
+      options: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: parseInt(process.env.COOKIE_MAX_AGE || '3600000'), // 1 hour
+      },
+    };
+    this.jwtConfig = {
+      secret: process.env.JWT_SECRET || 'secret',
+      expiresIn: process.env.JWT_EXPIRES_IN || '1h',
     };
   }
 
@@ -148,5 +180,12 @@ export class ConfigService {
 
   getDbConfig(): DbConfig {
     return this.dbConfig;
+  }
+
+  getCookieConfig(): CookieConfig {
+    return this.cookieConfig;
+  }
+  getJWTConfig(): JWTConfig {
+    return this.jwtConfig;
   }
 }
