@@ -3,8 +3,6 @@
  * All rights reserved.
  */
 
-import { Response } from 'express';
-import { HttpStatus } from '../http';
 import { IResponse } from '../interfaces/http';
 import { HttpStatusCode } from '../constants/status-codes';
 

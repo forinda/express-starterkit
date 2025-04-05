@@ -3,13 +3,13 @@
  * All rights reserved.
  */
 
+import { HttpStatus } from '../constants/status-codes';
 import { ApiRequestContext, LoginAuthorityOption, Request } from '../interfaces/controller';
-import { HttpStatus } from '../http';
 import { createHttpResponse } from './responder';
 import { LoginAuthorityType } from '@/common/constants/permissions';
 
 export function controllerAuth(context: ApiRequestContext, bodyBindOrgId?: boolean) {
-  return async (auth?: LoginAuthorityType) => {
+  return async (auth: LoginAuthorityType) => {
     if (!auth) return;
 
     const user = context.req.user;
