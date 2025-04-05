@@ -15,7 +15,10 @@ const createUserSchema = z.object({
 export class CreateUserController {
   private createUserService!: CreateUserService;
 
-  @Post('/', { bodySchema: createUserSchema, auth: 'roles:write' })
+  @Post('/', {
+    bodySchema: createUserSchema,
+    auth: true,
+  })
   async createUser({ body, res }: ApiRequestContext<CreateUserEntity>) {
     const user = await this.createUserService.execute(body);
     return formatResponse(res, {
