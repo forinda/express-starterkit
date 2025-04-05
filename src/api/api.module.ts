@@ -9,11 +9,12 @@ import { di } from '@/core/di/container';
 import { LoggerService } from '@/common/logger';
 import { UsersControllerModule } from './users';
 import { AuthControllerModule } from './auth';
+import { HealthControllerModule } from './health';
 import { ControllerModule } from '@/core/decorators/controller-module';
 import { ApiModule, API_MODULE_KEY } from '@/core/decorators/api-module';
 
 @ApiModule({
-  modules: [UsersControllerModule, AuthControllerModule],
+  modules: [UsersControllerModule, AuthControllerModule, HealthControllerModule],
 })
 @Singleton()
 export class ApiV1Module {

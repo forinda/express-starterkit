@@ -95,4 +95,22 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## API Endpoints
+
+### Health Check
+- `GET /health` - Check service health status
+  ```json
+  {
+    "message": "Service is healthy",
+    "data": {
+      "status": "ok",
+      "timestamp": "2024-03-21T12:34:56.789Z",
+      "uptime": 123.45
+    }
+  }
+  ```
+
+### Authentication
+// ... existing code ... 
