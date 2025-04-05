@@ -4,15 +4,14 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 export default defineConfig({
+  dialect: 'postgresql',
   schema: './src/core/db/schema',
   out: './migrations',
-  dialect: 'postgresql',
   dbCredentials: {
-    database: process.env.DB_NAME!,
     host: process.env.DB_HOST!,
-    port: Number(process.env.DB_PORT ?? '5432'),
+    port: Number(process.env.DB_PORT),
     user: process.env.DB_USER!,
     password: process.env.DB_PASSWORD!,
-    // ssl: process.env.DB_SSL === 'false',
+    database: process.env.DB_NAME!,
   },
 });
