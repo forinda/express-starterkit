@@ -22,13 +22,17 @@ export interface PaginationParams {
   order?: 'asc' | 'desc';
 }
 
-export interface ApiRequestContext {
+export interface ApiRequestContext<
+  B = Record<string, any>,
+  Q = Record<string, any>,
+  P = Record<string, any>
+> {
   req: Request;
   res: Response;
   next: NextFunction;
-  params: Record<string, any>;
-  query: Record<string, any>;
-  body: Record<string, any>;
+  params: P;
+  query: Q;
+  body: B;
   pagination?: PaginationParams;
   user?: any;
   request_id?: string;

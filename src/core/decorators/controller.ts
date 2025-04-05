@@ -3,13 +3,12 @@
  * All rights reserved.
  */
 
-import { Router, Request, Response, NextFunction, RequestHandler } from 'express';
+import { Router, RequestHandler } from 'express';
 import { di } from '../di/container';
 import { LoggerService } from '@/common/logger';
 import { withContext, ContextTransformer, RouteHandlerContext, RouteOptions } from './context';
-
-export const CONTROLLER_METADATA_KEY = 'di:controller';
-export const ROUTES_METADATA_KEY = 'di:routes';
+import { CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY } from './metadata';
+import { LoginAuthorityOption } from '../interfaces/controller';
 
 // Initialize logger
 const logger = new LoggerService();
@@ -79,7 +78,7 @@ function createRouteDecorator<B = any, Q = any, P = any>(method: string) {
     options: {
       transformer?: ContextTransformer<B, Q, P>;
       paginate?: boolean;
-      auth?: boolean;
+      auth?: LoginAuthorityOption;
     } = {}
   ): MethodDecorator => {
     return (target: any, propertyKey: string | symbol) => {
@@ -91,7 +90,7 @@ function createRouteDecorator<B = any, Q = any, P = any>(method: string) {
         transformer: options.transformer,
         options: {
           paginate: options.paginate,
-          auth: options.auth,
+          auth: options.auth!,
         },
       });
       Reflect.defineMetadata(ROUTES_METADATA_KEY, routes, target);

@@ -6,8 +6,9 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { di } from '../di/container';
 import { LoggerService } from '@/common/logger';
-import { CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY, ControllerInfo } from './controller';
+import { ControllerInfo } from './controller';
 import { withContext } from './context';
+import { CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY } from './metadata';
 
 const logger = new LoggerService();
 

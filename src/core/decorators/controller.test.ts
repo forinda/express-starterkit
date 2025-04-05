@@ -4,17 +4,9 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Delete,
-  Patch,
-  CONTROLLER_METADATA_KEY,
-  ROUTES_METADATA_KEY,
-} from './controller';
+import { Controller, Get, Post, Put, Delete, Patch } from './controller';
 import { Router } from 'express';
+import { CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY } from './metadata';
 
 describe('Controller Decorators', () => {
   describe('@Controller', () => {
