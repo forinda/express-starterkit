@@ -1,5 +1,3 @@
-import { injectable } from 'inversify';
-
 export const DOMAIN_INJECTOR_KEYS = {
   controllers: Symbol.for('Domain:Controllers'),
 };
