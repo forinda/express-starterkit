@@ -3,76 +3,65 @@
  * All rights reserved.
  */
 
-import { ControllerInfo, CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY } from './controller';
-import { LoggerService } from '@/common/logger';
+import { Router, Request, Response, NextFunction } from 'express';
 import { di } from '../di/container';
-import { Router } from 'express';
+import { LoggerService } from '@/common/logger';
+import { CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY, ControllerInfo } from './controller';
+import { withContext } from './context';
 
-export const CONTROLLER_MODULE_KEY = Symbol('controller-module');
+const logger = new LoggerService();
 
-export interface ControllerModuleMetadata {
-  controllers: any[];
-}
+export class ControllerModule {
+  private controllers: Map<string, ControllerInfo> = new Map();
 
-export function ControllerModule(metadata: ControllerModuleMetadata) {
-  return function (target: any) {
-    const logger = new LoggerService();
-    logger.debug('ControllerModule', `Registering module ${target.name}`);
+  public registerController(target: any): void {
+    const controllerMetadata = Reflect.getMetadata(CONTROLLER_METADATA_KEY, target);
+    const routes = Reflect.getMetadata(ROUTES_METADATA_KEY, target.prototype) || [];
 
-    // Store module metadata
-    Reflect.defineMetadata(CONTROLLER_MODULE_KEY, metadata, target);
+    if (!controllerMetadata) {
+      throw new Error(`Controller ${target.name} is not decorated with @Controller`);
+    }
 
-    return target;
-  };
-}
+    const router = Router();
+    const controllerInfo: ControllerInfo = {
+      ...controllerMetadata,
+      target,
+      router,
+      routes,
+    };
 
-export abstract class BaseControllerModule {
-  protected logger: LoggerService;
-  protected controllers: ControllerInfo[] = [];
-
-  constructor() {
-    this.logger = di.get<LoggerService>(Symbol.for('LoggerService'));
+    this.controllers.set(target.name, controllerInfo);
+    logger.debug('[ControllerModule]', `Registered controller ${target.name}`);
   }
 
-  protected initializeController(controller: any): ControllerInfo {
-    const router = Router({ mergeParams: true });
-    const controllerMetadata = Reflect.getMetadata(CONTROLLER_METADATA_KEY, controller);
-    const routes = Reflect.getMetadata(ROUTES_METADATA_KEY, controller.prototype) || [];
+  public initializeController(controllerInfo: ControllerInfo): void {
+    const { target, router, routes } = controllerInfo;
+    const instance = di.resolve(target) as any;
 
-    // Set up routes
-    routes.forEach((route: any) => {
-      const handler = async (req: any, res: any, next: any) => {
-        try {
-          const controllerInstance = di.get<typeof controller>(Symbol.for(controller.name));
-          const result = await controllerInstance[route.handlerName](req, res, next);
-          if (result !== undefined && !res.headersSent) {
-            return res.json(result);
-          }
-        } catch (error: any) {
-          this.logger.error(
-            this.constructor.name,
-            `Error in ${controller.name}.${route.handlerName}: ${error.message}`
-          );
-          return next(error);
-        }
-      };
+    routes.forEach(route => {
+      const { method, path, handlerName, transformer, options } = route;
+      const handler = instance[handlerName].bind(instance);
 
-      (router[route.method as keyof Router] as Function)(route.path, handler);
-      this.logger.debug(
-        this.constructor.name,
-        `Registered route ${route.method.toUpperCase()} ${route.path} for ${controller.name}`
+      if (transformer) {
+        (router as any)[method](path, (req: Request, res: Response, next: NextFunction) => {
+          withContext(req, res, next, handler, options);
+        });
+      } else {
+        (router as any)[method](path, handler);
+      }
+
+      logger.debug(
+        '[ControllerModule]',
+        `Initialized route ${method.toUpperCase()} ${path} for ${target.name}.${handlerName}`
       );
     });
-
-    return {
-      target: controller,
-      router,
-      path: controllerMetadata.basePath,
-      basePath: controllerMetadata.basePath,
-      routes,
-      version: 'v1',
-    };
   }
 
-  abstract getControllers(): ControllerInfo[];
+  public getController(name: string): ControllerInfo | undefined {
+    return this.controllers.get(name);
+  }
+
+  public getAllControllers(): ControllerInfo[] {
+    return Array.from(this.controllers.values());
+  }
 }

@@ -1,10 +1,14 @@
+/**
+ * Copyright (c) 2025 Felix Orinda
+ * All rights reserved.
+ */
+
 import { Singleton } from '@/core/di/container';
 import { ControllerInfo } from '@/core/decorators/controller';
-import { Router, Request, Response, NextFunction, RequestHandler } from 'express';
 import { di } from '@/core/di/container';
 import { LoggerService } from '@/common/logger';
 import { UsersControllerModule } from './users';
-import { BaseControllerModule } from '@/core/decorators/controller-module';
+import { ControllerModule } from '@/core/decorators/controller-module';
 import { ApiModule, API_MODULE_KEY } from '@/core/decorators/api-module';
 
 @ApiModule({
@@ -14,7 +18,7 @@ import { ApiModule, API_MODULE_KEY } from '@/core/decorators/api-module';
 export class ApiV1Module {
   private controllers: ControllerInfo[] = [];
   private logger: LoggerService;
-  private controllerModules: BaseControllerModule[];
+  private controllerModules: ControllerModule[];
 
   constructor() {
     this.logger = di.get<LoggerService>(Symbol.for('LoggerService'));
@@ -28,15 +32,15 @@ export class ApiV1Module {
     }
 
     // Initialize controller modules
-    this.controllerModules = metadata.modules.map((Module: new () => BaseControllerModule) => {
+    this.controllerModules = metadata.modules.map((Module: new () => ControllerModule) => {
       this.logger.debug('ApiV1Module', `Resolving module ${Module.name}`);
-      return di.get<BaseControllerModule>(Symbol.for(Module.name));
+      return di.get<ControllerModule>(Symbol.for(Module.name));
     });
 
     // Collect controllers from all modules
     this.controllerModules.forEach(module => {
       this.logger.debug('ApiV1Module', `Loading controllers from ${module.constructor.name}`);
-      this.controllers.push(...module.getControllers());
+      this.controllers.push(...module.getAllControllers());
     });
 
     this.logger.debug('ApiV1Module', `Loaded ${this.controllers.length} controllers`);
@@ -44,5 +48,9 @@ export class ApiV1Module {
 
   getControllers(): ControllerInfo[] {
     return this.controllers;
+  }
+
+  getControllerModules(): ControllerModule[] {
+    return this.controllerModules;
   }
 }

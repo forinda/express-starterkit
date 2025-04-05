@@ -1,9 +1,16 @@
+/**
+ * Copyright (c) 2025 Felix Orinda
+ * All rights reserved.
+ */
+
 import { ApiVersion } from '@/core/decorators/api';
 import { Application, Router } from 'express';
 import { Singleton } from '@/core/di/container';
 import { ApiV1Module } from './api.module';
 import { LoggerService } from '@/common/logger';
 import { resolve } from '@/core/di/container';
+import { ControllerModule } from '@/core/decorators/controller-module';
+import { ControllerInfo } from '@/core/decorators/controller';
 
 @ApiVersion('v1')
 @Singleton()
@@ -33,13 +40,22 @@ export class Api {
 
     // Mount each controller
     for (const controller of controllers) {
-      const fullPath = `${this.basePath}${controller.path}`;
-      this.router.use(controller.path!, controller.router);
+      const fullPath = `${this.basePath}${controller.basePath}`;
+      this.router.use(controller.basePath, controller.router);
       this.logger.info('Api', `Mounted controller at ${fullPath}`);
     }
   }
 
   setup(application: Application) {
+    // Initialize controllers in the module
+    const controllerModules = this.apiModule.getControllerModules();
+    controllerModules.forEach((module: ControllerModule) => {
+      const controllers = module.getAllControllers();
+      controllers.forEach((controller: ControllerInfo) => {
+        module.initializeController(controller);
+      });
+    });
+
     // Mount controllers
     this.mountControllers();
 
