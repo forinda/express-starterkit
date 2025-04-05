@@ -4,6 +4,26 @@ import { Singleton } from '@/core/di/container';
 import { autoBind } from '@/core/decorators/bind';
 // import { Singleton } from '@/core/di/base-deco';
 
+const colors = {
+  reset: '\x1b[0m',
+  bright: '\x1b[1m',
+  dim: '\x1b[2m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  magenta: '\x1b[35m',
+  cyan: '\x1b[36m',
+  white: '\x1b[37m',
+};
+
+const logLevels = {
+  debug: { color: colors.cyan, prefix: 'DEBUG' },
+  info: { color: colors.green, prefix: 'INFO' },
+  warn: { color: colors.yellow, prefix: 'WARN' },
+  error: { color: colors.red, prefix: 'ERROR' },
+};
+
 export enum LogLevel {
   ERROR = 'error',
   WARN = 'warn',
@@ -59,7 +79,7 @@ export class LoggerService {
     };
 
     // Log the current log level
-    this.info(`Logger initialized with level: ${defaultLevel}`);
+    this.info('LoggerService', `Logger initialized with level: ${defaultLevel}`);
   }
 
   private initializeLogger(): void {
@@ -126,20 +146,26 @@ export class LoggerService {
     }
   }
 
-  error(message: string, meta?: Record<string, any>): void {
-    this.logger.error(message, meta);
+  private formatMessage(level: keyof typeof logLevels, context: string, message: string): string {
+    const timestamp = new Date().toISOString();
+    const { color, prefix } = logLevels[level];
+    return `${colors.dim}[${timestamp}]${colors.reset} ${color}[${prefix}]${colors.reset} ${colors.bright}[${context}]${colors.reset} ${message}`;
   }
 
-  warn(message: string, meta?: Record<string, any>): void {
-    this.logger.warn(message, meta);
+  error(context: string, message: string): void {
+    console.error(this.formatMessage('error', context, message));
   }
 
-  info(message: string, meta?: Record<string, any>): void {
-    this.logger.info(message, meta);
+  warn(context: string, message: string): void {
+    console.warn(this.formatMessage('warn', context, message));
   }
 
-  debug(message: string, meta?: Record<string, any>): void {
-    this.logger.debug(message, meta);
+  info(context: string, message: string): void {
+    console.info(this.formatMessage('info', context, message));
+  }
+
+  debug(context: string, message: string): void {
+    console.debug(this.formatMessage('debug', context, message));
   }
 
   http(message: string, meta?: Record<string, any>): void {

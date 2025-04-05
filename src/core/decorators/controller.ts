@@ -33,7 +33,7 @@ type ControllerOptions = {
 
 export function Controller(basePath: string, options?: ControllerOptions) {
   return function (target: any) {
-    logger.debug(`[Controller] Registering ${target.name} at path ${basePath}`);
+    console.debug(`[Controller] Registering ${target.name} at path ${basePath}`);
 
     // Normalize base path
     const normalizedBasePath =
@@ -58,7 +58,7 @@ export function Controller(basePath: string, options?: ControllerOptions) {
       const routeMetadata = Reflect.getMetadata(CONTROLLER_METADATA_KEY, target.prototype, key);
       if (routeMetadata) {
         controllerMetadata.routes.push(routeMetadata);
-        logger.debug(
+        console.debug(
           `[Controller] Registered route ${routeMetadata.method.toUpperCase()} ${
             routeMetadata.path
           } for ${target.name}.${key}`

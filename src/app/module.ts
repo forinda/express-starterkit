@@ -4,6 +4,7 @@ import { AppSetup } from './app';
 import { inject, injectable } from 'inversify';
 import { autoBind } from '@/core/decorators/bind';
 import { di } from '@/core/di/container';
+import { LoggerService } from '@/common/logger';
 
 /**
  * Application module for setting up Express application
@@ -13,9 +14,11 @@ import { di } from '@/core/di/container';
 export class AppModule {
   private readonly app: Application;
   private appSetup: AppSetup;
+  private logger: LoggerService;
 
   constructor() {
-    console.log('AppModule constructor');
+    this.logger = di.get<LoggerService>(Symbol.for('LoggerService'));
+    this.logger.info('AppModule', 'Initializing application module');
     // Create Express application
     this.app = express();
     // Initialize AppSetup with app instance
@@ -26,7 +29,7 @@ export class AppModule {
    * Initialize the application
    */
   async initialize(): Promise<void> {
-    console.log('Initializing AppModule');
+    this.logger.info('AppModule', 'Initializing application');
     // Initialize application setting
     await this.appSetup.initialize();
   }

@@ -22,9 +22,9 @@ export class Api {
   private apiModule: ApiV1Module;
 
   constructor() {
-    console.log('Api constructor');
     this.logger = resolve(LoggerService);
     this.apiModule = resolve(ApiV1Module);
+    this.logger.info('Api', `Initializing API v${this.version}`);
   }
 
   private mountControllers() {
@@ -35,7 +35,7 @@ export class Api {
     for (const controller of controllers) {
       const fullPath = `${this.basePath}${controller.path}`;
       this.router.use(controller.path!, controller.router);
-      this.logger.info(`Mounted controller at ${fullPath}`);
+      this.logger.info('Api', `Mounted controller at ${fullPath}`);
     }
   }
 
@@ -45,6 +45,6 @@ export class Api {
 
     // Mount API router
     application.use(this.basePath, this.router);
-    this.logger.info(`Mounted API ${this.version} at ${this.basePath}`);
+    this.logger.info('Api', `Mounted API ${this.version} at ${this.basePath}`);
   }
 }
