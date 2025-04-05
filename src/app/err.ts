@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2025 Felix Orinda
+ * All rights reserved.
+ */
+
+import { ApiError } from '@/common/error/api-error';
 import { LoggerService } from '@/common/logger';
 import { Application, Request, Response, NextFunction } from 'express';
 
@@ -9,8 +15,8 @@ import { Application, Request, Response, NextFunction } from 'express';
 export function setupErrorHandling(app: Application, logger: LoggerService): void {
   // 404 handler
   app.use((req: Request, res: Response) => {
-    logger.warn(`404 Not Found: ${req.method} ${req.path}`);
-    res.status(404).json({
+    logger.warn('ErrorHandler', `404 Not Found: ${req.method} ${req.path}`);
+    return res.status(404).json({
       status: 'error',
       message: 'Not Found',
     });
@@ -18,11 +24,11 @@ export function setupErrorHandling(app: Application, logger: LoggerService): voi
 
   // Error handler
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    logger.error('Unhandled error:', err);
+    logger.error('ErrorHandler', `Unhandled error: ${err.message}`);
+    if (err instanceof ApiError) {
+      return res.status(err.statusCode).json(err.toJSON());
+    }
 
-    res.status(500).json({
-      status: 'error',
-      message: 'Internal Server Error',
-    });
+    return res.status(500).json(ApiError.fromError(err).toJSON());
   });
 }
