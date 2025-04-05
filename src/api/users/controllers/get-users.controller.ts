@@ -4,14 +4,10 @@ import { Controller, Get } from '@/core/decorators/controller';
 import { GetUsersService } from '../services/get-users.service';
 import { getUsersQuerySchema } from '../schemas/get-users.schema';
 import { inject } from 'inversify';
+import { generateMiddleware } from '@/common/utils/mock-md';
 
 @Controller('/users', {
-  middlewares: [
-    (request, response, nextF) => {
-      console.log('Middleware executed for GetUsersController');
-      nextF();
-    },
-  ],
+  middlewares: generateMiddleware('@Controller:User', 1),
 })
 export class GetUsersController {
   @inject(GetUsersService)
@@ -20,6 +16,7 @@ export class GetUsersController {
   @Get('/', {
     querySchema: getUsersQuerySchema,
     paginate: true,
+    middlewares: generateMiddleware('@Controller:@Get:User', 2),
   })
   async getUsers(context: ApiRequestContext) {
     const { query } = context;
