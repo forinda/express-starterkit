@@ -1,3 +1,3 @@
-import { UserSelectType } from '@/core/db/schema/schema';
+import { UserInsertType } from '@/core/db/schema/schema';
 
-export type CreateUserEntity = UserSelectType;
+export type CreateUserEntity = UserInsertType;
