@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { di } from '@/core/di/container';
 import { AppModule } from './module';
 import { ServerModule } from './server';
@@ -8,24 +9,28 @@ import { LoggerService } from '@/common/logger';
  */
 async function bootstrap() {
   try {
-    // Create app module
-    const appModule = new AppModule();
-    await appModule.initialize();
+    const logger = di.resolve(LoggerService);
+    logger.info('Bootstrap', 'Starting application bootstrap...');
 
-    // Create server module
-    const serverModule = new ServerModule(appModule.getApp());
+    // Create and initialize app module
+    const appModule = di.resolve(AppModule);
+    await appModule.initialize();
+    const app = await appModule.getAppMount();
+
+    // Create and start server module
+    const serverModule = new ServerModule(app);
     await serverModule.start();
+
+    logger.info('Bootstrap', 'Application bootstrap completed successfully');
 
     // Handle process termination
     process.on('SIGTERM', async () => {
-      const logger = di.resolve(LoggerService);
       logger.info('Bootstrap', 'SIGTERM received. Shutting down gracefully...');
       await serverModule.stop();
       process.exit(0);
     });
 
     process.on('SIGINT', async () => {
-      const logger = di.resolve(LoggerService);
       logger.info('Bootstrap', 'SIGINT received. Shutting down gracefully...');
       await serverModule.stop();
       process.exit(0);

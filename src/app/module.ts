@@ -30,7 +30,6 @@ export class AppModule {
    */
   async initialize(): Promise<void> {
     this.logger.info('AppModule', 'Initializing application');
-    // Initialize application setting
     await this.appSetup.initialize();
   }
 
@@ -44,7 +43,8 @@ export class AppModule {
   /**
    * Start the application
    */
-  async start(): Promise<void> {
-    await this.appSetup.start();
+  async getAppMount(): Promise<Application> {
+    await this.appSetup.mount();
+    return this.app;
   }
 }

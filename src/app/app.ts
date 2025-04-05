@@ -14,13 +14,11 @@ import { autoBind } from '@/core/decorators/bind';
 @injectable()
 @autoBind()
 export class AppSetup {
-  private app: Application;
   private configService: ConfigService;
   private logger: LoggerService;
   private api: Api;
 
-  constructor(app: Application) {
-    this.app = app;
+  constructor(private app: Application) {
     this.configService = di.get(ConfigService);
     this.logger = di.get(LoggerService);
     this.api = di.get(Api);
@@ -48,42 +46,10 @@ export class AppSetup {
   }
 
   /**
-   * Start the application
+   * Mount the application
    */
-  async start(): Promise<void> {
-    const serverConfig = this.configService.getServerConfig();
-    const port = serverConfig.port;
-    const host = serverConfig.host;
-
-    // Log all mounted routes before starting the server
-    this.logger.info('AppSetup', 'Server routes:');
-    this.app._router.stack.forEach((middleware: any) => {
-      if (middleware.route) {
-        // Routes registered directly on the app
-        this.logger.info(
-          'AppSetup',
-          `${Object.keys(middleware.route.methods)} ${middleware.route.path}`
-        );
-      } else if (middleware.name === 'router') {
-        // Router middleware
-        middleware.handle.stack.forEach((handler: any) => {
-          if (handler.route) {
-            const path = handler.route.path;
-            const methods = Object.keys(handler.route.methods)
-              .filter(method => handler.route.methods[method])
-              .map(method => method.toUpperCase());
-            this.logger.info('AppSetup', `${methods.join(',')} ${middleware.regexp}${path}`);
-          }
-        });
-      }
-    });
-
-    this.app.listen(port, host, () => {
-      this.logger.info('AppSetup', `Server is running on http://${host}:${port}`);
-      this.logger.info(
-        'AppSetup',
-        `Swagger documentation available at http://${host}:${port}/api-docs`
-      );
-    });
+  async mount(): Promise<void> {
+    this.logger.info('AppSetup', 'Mounting application...');
+    // Any additional mounting logic can go here
   }
 }

@@ -3,8 +3,9 @@ import { LoggerService } from '@/common/logger';
 import { createServer, Server } from 'http';
 import { SocketService } from '../sockets';
 import { Application } from 'express';
-import { di } from '@/core/di/container';
+import { di, Singleton } from '@/core/di/container';
 
+@Singleton()
 export class ServerModule {
   private httpServer: Server;
   private configService: ConfigService;
@@ -25,13 +26,19 @@ export class ServerModule {
    */
   async start(): Promise<void> {
     const serverConfig = this.configService.getServerConfig();
-
+    const port = serverConfig.port;
+    const host = serverConfig.host;
     // Initialize Socket.IO
+    this.logger.info('ServerModule', 'Initializing Socket.IO server');
     this.socketService.initialize(this.httpServer);
 
     // Start HTTP server
     this.httpServer.listen(serverConfig.port, () => {
-      this.logger.info('ServerModule', `HTTP server is running on port ${serverConfig.port}`);
+      this.logger.info('AppSetup', `Server is running on http://${host}:${port}`);
+      this.logger.info(
+        'AppSetup',
+        `Swagger documentation available at http://${host}:${port}/api-docs`
+      );
       this.logger.info(
         'ServerModule',
         `Socket.IO server is running on ws://localhost:${serverConfig.port}`

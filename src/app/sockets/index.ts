@@ -1,19 +1,26 @@
 import { ConfigService } from '@/common/config';
 import { LoggerService } from '@/common/logger';
-import { injectable } from 'inversify';
+import { Singleton } from '@/core/di/container';
+import { createServer } from 'http';
+import { inject, injectable } from 'inversify';
 import { Server as SocketServer, Socket } from 'socket.io';
 
-@injectable()
+@Singleton()
 export class SocketService {
   private io: SocketServer | null = null;
 
-  constructor(private logger: LoggerService, private configService: ConfigService) {}
+  constructor(
+    @inject(LoggerService) private logger: LoggerService,
+    @inject(ConfigService)
+    private configService: ConfigService
+  ) {}
 
   /**
    * Initialize Socket.IO server
    * @param httpServer HTTP server instance
    */
-  initialize(httpServer: any): void {
+  initialize(httpServer: ReturnType<typeof createServer>): void {
+    this.logger.info('SocketService', 'Initializing Socket.IO server');
     // Create Socket.IO server
     this.io = new SocketServer(httpServer, {
       cors: {
@@ -22,8 +29,9 @@ export class SocketService {
         credentials: true,
       },
     });
-
+    this.logger.info('SocketService', 'Socket.IO server initialized');
     this.setupEventHandlers();
+    this.logger.info('SocketService', 'Socket.IO server initialized');
   }
 
   /**
