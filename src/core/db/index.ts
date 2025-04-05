@@ -10,7 +10,6 @@ import { ConfigService } from '@/common/config';
 import { di } from '../di/container';
 const consf = di.get<ConfigService>(Symbol.for('ConfigService'));
 const config = consf.getDatabaseConfig();
-console.log({ config });
 
 const pool = new Pool(config);
 
