@@ -1,7 +1,7 @@
 {
-  "name": "express-meta",
+  "name": "di-decos",
   "version": "1.0.0",
-  "description": "Express.js API with TypeScript, Swagger, and Dependency Injection",
+  "description": "A modern TypeScript Node.js API template with dependency injection, Drizzle ORM, and best practices for building scalable applications",
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
@@ -20,7 +20,28 @@
     "db:up": "drizzle-kit up",
     "db:studio": "drizzle-kit studio"
   },
-  "keywords": [],
+  "keywords": [
+    "typescript",
+    "nodejs",
+    "api",
+    "template",
+    "drizzle",
+    "orm",
+    "dependency-injection",
+    "inversify",
+    "postgresql",
+    "rest-api",
+    "express",
+    "jwt",
+    "authentication",
+    "docker",
+    "testing",
+    "vitest",
+    "openapi",
+    "swagger",
+    "migrations",
+    "database"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
