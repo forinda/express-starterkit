@@ -1,60 +1,79 @@
-import express, { Router } from 'express';
-import { injectable } from 'inversify';
-type MiddlewareType = express.RequestHandler;
+import { Router, Request, Response, NextFunction, RequestHandler } from 'express';
+import { di } from '../di/container';
+import { LoggerService } from '@/common/logger';
 
-type RouteMetadata = {
+export const CONTROLLER_METADATA_KEY = Symbol('controller');
+
+// Initialize logger
+const logger = new LoggerService();
+
+export interface RouteMetadata {
   path: string;
   method: keyof Pick<Router, 'get' | 'post' | 'put' | 'delete' | 'patch'>;
   handlerName: string;
-  middleware?: MiddlewareType[];
-};
+  middleware?: RequestHandler[];
+}
 
-export type ControllerMetadata = {
+export interface ControllerMetadata {
   basePath: string;
   routes: RouteMetadata[];
-  middlewares?: MiddlewareType[];
-};
+  middlewares?: RequestHandler[];
+}
 
-type RouteOptions = {
-  middleware?: MiddlewareType[];
-};
+export interface ControllerInfo extends ControllerMetadata {
+  target: any;
+  router: Router;
+  version?: string;
+  path?: string;
+}
+
 type ControllerOptions = {
-  middleware?: MiddlewareType[];
-};
-
-// Metadata Keys
-const MetaDataKeys = {
-  controller: Symbol.for('ApiController:metadata'),
-  route: Symbol.for('ApiController:route'),
+  middleware?: RequestHandler[];
 };
 
 export function Controller(basePath: string, options?: ControllerOptions) {
   return function (target: any) {
-    injectable()(target);
+    logger.debug(`[Controller] Registering ${target.name} at path ${basePath}`);
+
+    // Normalize base path
     const normalizedBasePath =
       basePath.endsWith('/') && basePath !== '/' ? basePath.slice(0, -1) : basePath;
 
+    // Initialize controller metadata
     const controllerMetadata: ControllerMetadata = {
       basePath: normalizedBasePath,
       routes: [],
       middlewares: options?.middleware || [],
     };
 
+    // Collect all route metadata from the controller's methods
     const propertyKeys = Object.getOwnPropertyNames(target.prototype).filter(
       k =>
         k !== 'constructor' &&
         typeof target.prototype[k] === 'function' &&
-        Reflect.hasMetadata(MetaDataKeys.route, target.prototype, k)
+        Reflect.hasMetadata(CONTROLLER_METADATA_KEY, target.prototype, k)
     );
 
     propertyKeys.forEach(key => {
-      const routeMetadata = Reflect.getMetadata(MetaDataKeys.route, target.prototype, key);
+      const routeMetadata = Reflect.getMetadata(CONTROLLER_METADATA_KEY, target.prototype, key);
       if (routeMetadata) {
         controllerMetadata.routes.push(routeMetadata);
+        logger.debug(
+          `[Controller] Registered route ${routeMetadata.method.toUpperCase()} ${
+            routeMetadata.path
+          } for ${target.name}.${key}`
+        );
       }
     });
 
-    Reflect.defineMetadata(MetaDataKeys.controller, controllerMetadata, target);
+    // Store controller metadata
+    Reflect.defineMetadata(CONTROLLER_METADATA_KEY, controllerMetadata, target);
+
+    // Bind controller to DI container
+    const token = Symbol.for(target.name);
+    di.bind(token).to(target).inSingletonScope();
+
+    return target;
   };
 }
 
@@ -62,7 +81,7 @@ export function Controller(basePath: string, options?: ControllerOptions) {
 function createMethodDecorator(
   method: keyof Pick<Router, 'all' | 'get' | 'head' | 'delete' | 'patch' | 'post' | 'put'>
 ) {
-  return (path: string, options?: RouteOptions) => {
+  return (path: string, options?: { middleware?: RequestHandler[] }) => {
     return (target: any, propertyKey: string) => {
       const routeMetadata: RouteMetadata = {
         path,
@@ -71,7 +90,7 @@ function createMethodDecorator(
         middleware: options?.middleware || [],
       };
 
-      Reflect.defineMetadata(MetaDataKeys.route, routeMetadata, target, propertyKey);
+      Reflect.defineMetadata(CONTROLLER_METADATA_KEY, routeMetadata, target, propertyKey);
     };
   };
 }

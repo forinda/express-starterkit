@@ -1,10 +1,9 @@
 import { ConfigService } from '@/common/config';
 import { LoggerService } from '@/common/logger';
-import { AutoBindDep } from '@/core/di/auto-bind';
 import { Application } from 'express';
 import { setupPlugins } from './plugins';
 import { setupErrorHandling } from './err';
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import { Api } from '@/api';
 import { di } from '@/core/di/container';
 import { autoBind } from '@/core/decorators/bind';
@@ -15,19 +14,16 @@ import { autoBind } from '@/core/decorators/bind';
 @injectable()
 @autoBind()
 export class AppSetup {
-  private app!: Application;
+  private app: Application;
   private configService: ConfigService;
   private logger: LoggerService;
-  @inject(Api)
-  private readonly api!: Api;
-  // private domainRegistry: ControllerDomainRegistry;
+  private api: Api;
 
   constructor(app: Application) {
-    // this.app = app;
+    this.app = app;
     this.configService = di.get(ConfigService);
     this.logger = di.get(LoggerService);
-    this.app = app;
-    // this.domainRegistry = container.get(ControllerDomainRegistry);
+    this.api = di.get(Api);
   }
 
   /**
@@ -40,13 +36,6 @@ export class AppSetup {
     // Setup plugins and middleware
     setupPlugins(this.app, this.configService);
     this.logger.info('Plugins setup complete');
-
-    // Setup Swagger documentation
-    // setupSwagger(this.app, this.configService, this.logger, this.domainRegistry);
-    // this.logger.info('Swagger setup complete');
-
-    // Add Swagger middleware to serve JSON
-    // this.app.use(swaggerMiddleware);
 
     // Setup routes
     this.api.setup(this.app);

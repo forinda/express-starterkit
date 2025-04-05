@@ -16,19 +16,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    },
-    "plugins": [
-      {
-        "transform": "typescript-transform-paths"
-      },
-      {
-        "transform": "typescript-transform-paths",
-        "afterDeclarations": true
-      }
-    ]
+    }
   },
   "ts-node": {
-    "require": ["ts-node/register", "typescript-transform-paths/register"]
+    "require": ["tsconfig-paths/register"],
+    "transpileOnly": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

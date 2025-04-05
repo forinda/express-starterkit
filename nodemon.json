@@ -2,9 +2,9 @@
     "watch": ["./src/**/*.ts"],
     "ext": "js,ts",
     "ignore": ["dist/**/*.spec.js", "dist/**/*.test.js"],
-    "exec": "ts-node ./src/index.ts",
+    "exec": "ts-node --project tsconfig.json ./src/index.ts",
     "execMap": {
-        "ts": "ts-node --esm"
+        "ts": "ts-node --project tsconfig.json"
     },
     "env": {
         "NODE_ENV": "development"

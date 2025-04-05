@@ -10,7 +10,7 @@ type DomainModuleDecoratorOptions = {
 
 export function DomainModule(options: DomainModuleDecoratorOptions = {}) {
   return function (target: any) {
-    injectable()(target);
+    // injectable()(target);
     Reflect.defineMetadata(DOMAIN_INJECTOR_KEYS.controllers, options.controllers || [], target);
   };
 }

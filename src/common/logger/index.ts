@@ -1,5 +1,7 @@
 import winston from 'winston';
 import { injectable } from 'inversify';
+import { Singleton } from '@/core/di/container';
+import { autoBind } from '@/core/decorators/bind';
 // import { Singleton } from '@/core/di/base-deco';
 
 export enum LogLevel {
@@ -27,7 +29,8 @@ interface LogMessage {
 }
 
 // @AutoRegister({ singleton: true })
-@injectable()
+@Singleton()
+@autoBind()
 export class LoggerService {
   private logger: winston.Logger;
   private options: LoggerOptions;

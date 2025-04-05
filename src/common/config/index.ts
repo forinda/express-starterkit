@@ -1,5 +1,6 @@
-import { AutoBindDep } from '@/core/di/auto-bind';
 import { LoggerOptions, LogLevel } from '../logger';
+import { injectable } from 'inversify';
+import { autoBind } from '@/core/decorators/bind';
 
 export interface DatabaseConfig {
   host: string;
@@ -35,7 +36,8 @@ export interface AppConfig {
   swagger: SwaggerConfig;
 }
 
-@AutoBindDep({ singleton: true })
+@injectable()
+@autoBind()
 export class ConfigService {
   private config: AppConfig;
 

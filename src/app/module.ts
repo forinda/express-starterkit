@@ -1,4 +1,3 @@
-import { AutoBindDep } from '@/core/di/auto-bind';
 import { Application } from 'express';
 import express from 'express';
 import { AppSetup } from './app';
@@ -13,11 +12,10 @@ import { di } from '@/core/di/container';
 @autoBind()
 export class AppModule {
   private readonly app: Application;
-  private appSetup!: AppSetup;
+  private appSetup: AppSetup;
 
   constructor() {
     console.log('AppModule constructor');
-
     // Create Express application
     this.app = express();
     // Initialize AppSetup with app instance
@@ -28,9 +26,9 @@ export class AppModule {
    * Initialize the application
    */
   async initialize(): Promise<void> {
+    console.log('Initializing AppModule');
     // Initialize application setting
-    di.get(AppSetup).initialize();
-    // await this.appSetup.initialize(this.app);
+    await this.appSetup.initialize();
   }
 
   /**
@@ -44,8 +42,6 @@ export class AppModule {
    * Start the application
    */
   async start(): Promise<void> {
-    // await this.appSetup.start();
-    // Start the application on the specified port
-    await di.get(AppSetup).start();
+    await this.appSetup.start();
   }
 }
