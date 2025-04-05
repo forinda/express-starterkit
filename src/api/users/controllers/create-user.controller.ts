@@ -4,6 +4,7 @@ import { Controller, Post } from '@/core/decorators/controller';
 import { CreateUserService } from '../services/create-user.service';
 import { di } from '@/core/di/container';
 import { z } from 'zod';
+import { CreateUserEntity } from '../entities/create-user-entity';
 
 const createUserSchema = z.object({
   name: z.string().min(1),
@@ -14,10 +15,9 @@ const createUserSchema = z.object({
 export class CreateUserController {
   private createUserService!: CreateUserService;
 
-  @Post('/')
-  async createUser({ body, res }: ApiRequestContext) {
-    const validatedData = createUserSchema.parse(body);
-    const user = await this.createUserService.execute(validatedData);
+  @Post('/', { bodySchema: createUserSchema, auth: 'roles:write' })
+  async createUser({ body, res }: ApiRequestContext<CreateUserEntity>) {
+    const user = await this.createUserService.execute(body);
     return formatResponse(res, {
       message: 'User created successfully',
       data: user,
