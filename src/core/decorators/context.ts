@@ -4,37 +4,20 @@
  */
 
 import { LoginAuthorityType } from '@/common/constants/permissions';
-import { INextFunction, IRequest, IResponse } from '../interfaces/http';
-
-export interface PaginationParams {
-  page?: number;
-  limit?: number;
-  sort?: string;
-  order?: 'asc' | 'desc';
-}
-
-export interface RouteOptions {
-  paginate?: boolean;
-  auth?: LoginAuthorityType;
-}
-
-export interface RequestContext<B = any, Q = any, P = any> {
-  body: B;
-  query: Q;
-  params: P;
-  pagination?: PaginationParams;
-  user?: any;
-  req: IRequest;
-  res: IResponse;
-  next: INextFunction;
-}
+import {
+  ApiRequestContext,
+  INextFunction,
+  IRequest,
+  IResponse,
+  MethodProps,
+} from '../context/request';
 
 export type ContextTransformer<B = any, Q = any, P = any> = (
-  context: RequestContext<B, Q, P>
-) => Promise<RequestContext<B, Q, P>>;
+  context: ApiRequestContext<B, Q, P>
+) => Promise<ApiRequestContext<B, Q, P>>;
 
 export type RouteHandlerContext<B = any, Q = any, P = any> = (
-  context: RequestContext<B, Q, P>
+  context: ApiRequestContext<B, Q, P>
 ) => Promise<any>;
 
 export function createContextTransformer<B = any, Q = any, P = any>(
@@ -43,55 +26,52 @@ export function createContextTransformer<B = any, Q = any, P = any>(
   return transformer;
 }
 
-export async function withContext<B = any, Q = any, P = any>(
+export async function transformToContext<B = any, Q = any, P = any>(
   req: IRequest,
   res: IResponse,
   next: INextFunction,
   handler: RouteHandlerContext<B, Q, P>,
-  options?: RouteOptions
+  options?: MethodProps<B, Q, P>
 ) {
-  try {
-    // Initialize context
-    const context: RequestContext<B, Q, P> = {
-      body: req.body as B,
-      query: req.query as Q,
-      params: req.params as P,
-      req,
-      res,
-      next,
-    };
+  // Initialize context
+  let context: ApiRequestContext<B, Q, P> = {
+    body: req.body as B,
+    query: req.query as Q,
+    params: req.params as P,
+    req,
+    res,
+    next,
+  };
 
-    // Handle authentication if required
-    if (options?.auth) {
-      // TODO: Implement authentication logic
-      // For now, just set a mock user
-      context.user = { id: 1, name: 'Test User' };
-    }
-
-    // Handle pagination if required
-    if (options?.paginate) {
-      const { page = 1, limit = 10, sort, order = 'asc' } = req.query;
-      context.pagination = {
-        page: Number(page),
-        limit: Number(limit),
-        sort: sort as string,
-        order: order as 'asc' | 'desc',
-      };
-    }
-
-    // Call the handler with the context
-    const result = await handler(context);
-
-    // Handle paginated response
-    if (options?.paginate && Array.isArray(result)) {
-      return res.json({
-        data: result,
-        pagination: context.pagination,
-      });
-    } else {
-      return res.json(result);
-    }
-  } catch (error) {
-    return next(error);
+  // Handle authentication if required
+  if (options?.auth) {
+    // TODO: Implement authentication logic
+    // For now, just set a mock user
+    context.user = { id: 1, name: 'Test User' };
   }
+
+  // Handle pagination if required
+  if (options?.paginate) {
+    const { page = 1, limit = 10, sort, order = 'asc' } = req.query;
+    context.pagination = {
+      page: Number(page),
+      limit: Number(limit),
+      sort: sort as string,
+      order: order as 'asc' | 'desc',
+    };
+  }
+  if (options?.transformer) {
+    context = await options.transformer(context);
+  }
+  if (options?.bodySchema) {
+    context.body = options.bodySchema.parse(context.body);
+  }
+  if (options?.querySchema) {
+    context.query = options.querySchema.parse(context.query);
+  }
+  if (options?.paramSchema) {
+    context.params = options.paramSchema.parse(context.params);
+  }
+
+  return handler(context);
 }

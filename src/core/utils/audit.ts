@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-import { ApiRequestContext } from '../interfaces/controller';
+import { ApiRequestContext } from '../context/request';
 
 export function userAudit(action: string) {
   return (context: ApiRequestContext) => {

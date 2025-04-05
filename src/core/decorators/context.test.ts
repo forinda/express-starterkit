@@ -5,7 +5,7 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { Request, Response, NextFunction } from 'express';
-import { withContext, createContextTransformer } from './context';
+import { transformToContext, createContextTransformer } from './context';
 
 describe('Context System', () => {
   describe('withContext', () => {
@@ -26,7 +26,7 @@ describe('Context System', () => {
 
       const handler = vi.fn().mockResolvedValue({ success: true });
 
-      await withContext(mockReq, mockRes, mockNext, handler);
+      await transformToContext(mockReq, mockRes, mockNext, handler);
 
       expect(handler).toHaveBeenCalledWith({
         body: { name: 'Test' },
@@ -56,7 +56,7 @@ describe('Context System', () => {
 
       const handler = vi.fn().mockResolvedValue([1, 2, 3]);
 
-      await withContext(mockReq, mockRes, mockNext, handler, { paginate: true });
+      await transformToContext(mockReq, mockRes, mockNext, handler, { paginate: true });
 
       expect(handler).toHaveBeenCalledWith({
         body: {},
@@ -100,7 +100,7 @@ describe('Context System', () => {
 
       const handler = vi.fn().mockResolvedValue({ success: true });
 
-      await withContext(mockReq, mockRes, mockNext, handler, { auth: true });
+      await transformToContext(mockReq, mockRes, mockNext, handler, { auth: true });
 
       expect(handler).toHaveBeenCalledWith({
         body: {},
@@ -126,7 +126,7 @@ describe('Context System', () => {
       const error = new Error('Test error');
       const handler = vi.fn().mockRejectedValue(error);
 
-      await withContext(mockReq, mockRes, mockNext, handler);
+      await transformToContext(mockReq, mockRes, mockNext, handler);
 
       expect(mockNext).toHaveBeenCalledWith(error);
     });

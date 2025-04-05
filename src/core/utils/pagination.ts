@@ -4,7 +4,7 @@
  */
 
 import { Request } from 'express';
-import { PaginationParams } from '../interfaces/controller';
+import { PaginationParams } from '../context/request';
 
 export function extractPaginationParams(query: Request['query']): PaginationParams {
   const page = Number(query.page) || 1;

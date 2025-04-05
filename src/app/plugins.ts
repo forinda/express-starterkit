@@ -35,6 +35,18 @@ export function setupPlugins(app: Application, configService: ConfigService): vo
   // Security headers
   app.use(helmet());
 
+  // Proxy support
+  // if (serverConfig.proxy) {
+  app.set('trust proxy', 1); // Trust first proxy
+  // }
+
+  // Disable x-powered-by header
+  app.disable('x-powered-by');
+  // Enable strict routing
+  app.enable('strict routing');
+  // Enable case-sensitive routing
+  app.enable('case sensitive routing');
+
   // Compression
   app.use(compression());
 

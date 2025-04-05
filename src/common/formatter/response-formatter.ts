@@ -1,6 +1,6 @@
-import { HttpStatus } from "@/core/constants/status-codes";
-import { IResponse } from "@/core/interfaces/http";
-import { ApiError } from "../error/api-error";
+import { HttpStatus } from '@/core/constants/status-codes';
+import { ApiError } from '../error/api-error';
+import { IResponse } from '@/core/context/request';
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -26,7 +26,7 @@ export class ResponseFormatter {
     const response: ApiResponse<T> = {
       success: true,
       data,
-      meta
+      meta,
     };
 
     return res.status(statusCode).json(response);
@@ -46,8 +46,8 @@ export class ResponseFormatter {
       error: {
         message: error.message,
         code: isApiError ? (error as ApiError).statusCode : statusCode,
-        details: isApiError ? (error as ApiError).metadata : undefined
-      }
+        details: isApiError ? (error as ApiError).metadata : undefined,
+      },
     };
 
     return res.status(isApiError ? (error as ApiError).statusCode : statusCode).json(response);
@@ -76,10 +76,10 @@ export class ResponseFormatter {
           total,
           totalPages,
           hasNextPage: page < totalPages,
-          hasPrevPage: page > 1
+          hasPrevPage: page > 1,
         },
-        ...meta
-      }
+        ...meta,
+      },
     };
 
     return res.status(HttpStatus.OK).json(response);

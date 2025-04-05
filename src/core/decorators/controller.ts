@@ -6,9 +6,9 @@
 import { Router, RequestHandler } from 'express';
 import { di } from '../di/container';
 import { LoggerService } from '@/common/logger';
-import { withContext, ContextTransformer, RouteHandlerContext, RouteOptions } from './context';
+import { ContextTransformer, RouteHandlerContext } from './context';
 import { CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY } from './metadata';
-import { LoginAuthorityType } from '@/common/constants/permissions';
+import { MethodProps } from '../context/request';
 
 // Initialize logger
 const logger = new LoggerService();
@@ -18,7 +18,7 @@ export interface RouteMetadata<B = any, Q = any, P = any> {
   path: string;
   handlerName: string;
   transformer?: ContextTransformer<B, Q, P>;
-  options?: RouteOptions;
+  options?: MethodProps<B, Q, P>;
 }
 
 export interface ControllerMetadata {
@@ -73,14 +73,7 @@ export function Controller(basePath: string = '/', options?: ControllerOptions) 
 }
 
 function createRouteDecorator<B = any, Q = any, P = any>(method: string) {
-  return (
-    path: string = '/',
-    options: {
-      transformer?: ContextTransformer<B, Q, P>;
-      paginate?: boolean;
-      auth?: LoginAuthorityType;
-    } = {}
-  ): MethodDecorator => {
+  return (path: string = '/', options: MethodProps = {}): MethodDecorator => {
     return (target: any, propertyKey: string | symbol) => {
       const routes: RouteMetadata[] = Reflect.getMetadata(ROUTES_METADATA_KEY, target) || [];
       routes.push({

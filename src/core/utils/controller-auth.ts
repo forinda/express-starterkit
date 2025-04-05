@@ -4,7 +4,7 @@
  */
 
 import { HttpStatus } from '../constants/status-codes';
-import { ApiRequestContext, LoginAuthorityOption, Request } from '../interfaces/controller';
+import { ApiRequestContext } from '../context/request';
 import { createHttpResponse } from './responder';
 import { LoginAuthorityType } from '@/common/constants/permissions';
 

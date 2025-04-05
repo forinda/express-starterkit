@@ -3,8 +3,8 @@
  * All rights reserved.
  */
 
-import { IResponse } from '../interfaces/http';
 import { HttpStatusCode } from '../constants/status-codes';
+import { IResponse } from '../context/request';
 
 export interface HttpResponse<T = any> {
   message?: string;

@@ -1,6 +1,6 @@
-import { HttpStatus, HttpStatusCode } from "@/core/constants/status-codes";
-import { IResponse } from "@/core/interfaces/http";
-import { ApiError } from "../error/api-error";
+import { HttpStatus, HttpStatusCode } from '@/core/constants/status-codes';
+import { ApiError } from '../error/api-error';
+import { IResponse } from '@/core/context/request';
 
 export interface PaginatedResponse<T> {
   data: T[];
@@ -32,9 +32,9 @@ export function formatResponse<T>(
   const response: ApiResponse<T> = {
     success: true,
     data,
-    message
+    message,
   };
- return res.status(status).json(response);
+  return res.status(status).json(response);
 }
 
 export function formatError(
@@ -42,21 +42,22 @@ export function formatError(
   error: Error | ApiError,
   status: HttpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR
 ) {
-  const apiError = error instanceof ApiError ? error : new ApiError(
-    error.message,
-    status as unknown as HttpStatusCode,
-    { originalError: error.message }
-  );
+  const apiError =
+    error instanceof ApiError
+      ? error
+      : new ApiError(error.message, status as unknown as HttpStatusCode, {
+          originalError: error.message,
+        });
 
   const response: ApiResponse<null> = {
     success: false,
     error: {
       message: apiError.message,
       code: apiError.statusCode,
-      details: apiError.metadata
-    }
+      details: apiError.metadata,
+    },
   };
- return res.status(apiError.statusCode).json(response);
+  return res.status(apiError.statusCode).json(response);
 }
 
 export function formatPaginatedResponse<T>(
@@ -76,10 +77,10 @@ export function formatPaginatedResponse<T>(
         page,
         limit,
         total,
-        pages
-      }
+        pages,
+      },
     },
-    message
+    message,
   };
   return res.status(HttpStatus.OK).json(response);
 }

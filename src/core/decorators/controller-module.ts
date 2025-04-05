@@ -7,7 +7,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { di } from '../di/container';
 import { LoggerService } from '@/common/logger';
 import { ControllerInfo } from './controller';
-import { withContext } from './context';
+import { transformToContext } from './context';
 import { CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY } from './metadata';
 
 const logger = new LoggerService();
@@ -43,13 +43,9 @@ export class ControllerModule {
       const { method, path, handlerName, transformer, options } = route;
       const handler = instance[handlerName].bind(instance);
 
-      if (transformer) {
-        (router as any)[method](path, (req: Request, res: Response, next: NextFunction) => {
-          withContext(req, res, next, handler, options);
-        });
-      } else {
-        (router as any)[method](path, handler);
-      }
+      (router as any)[method](path, (req: Request, res: Response, next: NextFunction) => {
+        return transformToContext(req, res, next, handler, { ...(options ?? {}), transformer });
+      });
 
       logger.debug(
         '[ControllerModule]',
