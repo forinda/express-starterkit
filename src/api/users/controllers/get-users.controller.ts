@@ -1,3 +1,4 @@
+import { formatResponse } from '@/common/formatter/response';
 import { ApiRequestContext } from '@/core/context/request';
 import { Controller, Get } from '@/core/decorators/controller';
 
@@ -5,7 +6,7 @@ import { Controller, Get } from '@/core/decorators/controller';
 export class GetUsersController {
   @Get('/')
   async getUsers({ res }: ApiRequestContext) {
-    return res.status(200).json({
+    const data = {
       message: 'Users fetched successfully',
       users: [
         {
@@ -15,6 +16,7 @@ export class GetUsersController {
           name: 'Jane Doe',
         },
       ],
-    });
+    };
+    return formatResponse(res, data);
   }
 }
