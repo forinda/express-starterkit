@@ -44,6 +44,14 @@ export class ControllerModule {
       const handler = instance[handlerName].bind(instance);
 
       (router as any)[method](path, (req: Request, res: Response, next: NextFunction) => {
+        if (options?.middlewares) {
+          const allMiddlewares = [...(controllerInfo.middlewares ?? []), ...options.middlewares];
+          console.log(`Middlewares for ${method.toUpperCase()} ${path}:`, allMiddlewares.length);
+
+          allMiddlewares.forEach(middleware => {
+            middleware(req, res, next);
+          });
+        }
         return transformToContext(req, res, next, handler, { ...(options ?? {}), transformer });
       });
 

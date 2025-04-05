@@ -43,6 +43,7 @@ export interface MethodProps<B = any, Q = any, P = any> {
   paramSchema?: z.ZodType<P>;
   querySchema?: z.ZodType<Q>;
   bodySchema?: z.ZodType<B>;
+  middlewares?: any[];
 }
 
 export interface LoginAuthorityOption {

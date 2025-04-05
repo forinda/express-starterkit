@@ -5,7 +5,14 @@ import { GetUsersService } from '../services/get-users.service';
 import { getUsersQuerySchema } from '../schemas/get-users.schema';
 import { inject } from 'inversify';
 
-@Controller('/users')
+@Controller('/users', {
+  middlewares: [
+    (request, response, nextF) => {
+      console.log('Middleware executed for GetUsersController');
+      nextF();
+    },
+  ],
+})
 export class GetUsersController {
   @inject(GetUsersService)
   private getUsersService!: GetUsersService;

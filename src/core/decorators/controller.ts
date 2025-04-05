@@ -31,10 +31,11 @@ export interface ControllerInfo extends ControllerMetadata {
   version?: string;
   path?: string;
   routes: RouteMetadata[];
+  middlewares?: RequestHandler[];
 }
 
 type ControllerOptions = {
-  middleware?: RequestHandler[];
+  middlewares?: RequestHandler[];
 };
 
 export function Controller(basePath: string = '/', options?: ControllerOptions) {
@@ -81,10 +82,7 @@ function createRouteDecorator<B = any, Q = any, P = any>(method: string) {
         path,
         handlerName: propertyKey as string,
         transformer: options.transformer,
-        options: {
-          paginate: options.paginate,
-          auth: options.auth,
-        },
+        options,
       });
       Reflect.defineMetadata(ROUTES_METADATA_KEY, routes, target);
     };
