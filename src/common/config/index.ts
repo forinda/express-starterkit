@@ -1,7 +1,7 @@
 import { LoggerOptions, LogLevel } from '../logger';
-import { injectable } from 'inversify';
 import { autoBind } from '@/core/decorators/bind';
 import { Singleton } from '@/core/di/container';
+import 'dotenv/config';
 
 export interface DatabaseConfig {
   host: string;
