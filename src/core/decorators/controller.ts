@@ -6,7 +6,7 @@
 import { Router, RequestHandler } from 'express';
 import { di } from '../di/container';
 import { LoggerService } from '@/common/logger';
-import { ContextTransformer, RouteHandlerContext } from './context';
+import { ContextTransformer } from './context';
 import { CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY } from './metadata';
 import { MethodProps } from '../context/request';
 
@@ -23,6 +23,7 @@ export interface RouteMetadata<B = any, Q = any, P = any> {
 
 export interface ControllerMetadata {
   basePath: string;
+  middlewares?: RequestHandler[];
 }
 
 export interface ControllerInfo extends ControllerMetadata {
@@ -40,7 +41,7 @@ type ControllerOptions = {
 
 export function Controller(basePath: string = '/', options?: ControllerOptions) {
   return function (target: any) {
-    console.debug(`[Controller] Registering ${target.name} at path ${basePath}`);
+    logger.debug('[Controller]', `Registering ${target.name} at path ${basePath}`);
 
     // Normalize base path
     const normalizedBasePath =
@@ -49,16 +50,18 @@ export function Controller(basePath: string = '/', options?: ControllerOptions) 
     // Initialize controller metadata
     const controllerMetadata: ControllerMetadata = {
       basePath: normalizedBasePath,
+      middlewares: options?.middlewares || [],
     };
 
     // Collect all route metadata from the controller's methods
     const routes: RouteMetadata[] =
       Reflect.getMetadata(ROUTES_METADATA_KEY, target.prototype) || [];
     routes.forEach(route => {
-      console.debug(
-        `[Controller] Registered route ${route.method.toUpperCase()} ${route.path} for ${
-          target.name
-        }.${route.handlerName}`
+      logger.debug(
+        '[Controller]',
+        `Registered route ${route.method.toUpperCase()} ${route.path} for ${target.name}.${
+          route.handlerName
+        }`
       );
     });
 

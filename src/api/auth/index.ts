@@ -7,7 +7,6 @@ import { RegisterController } from './controllers/register.controller';
 import { FindByEmailRepository } from './repositories/find-by-email.repository';
 import { RegisterUserRepository } from './repositories/register-user.repository';
 import { AuthUtils } from '@/core/utils/auth.utils';
-import { ConfigService } from '@/core/config/config.service';
 import { LoginService } from './services/login.service';
 import { RegisterService } from './services/register.service';
 

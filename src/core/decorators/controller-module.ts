@@ -6,7 +6,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { di } from '../di/container';
 import { LoggerService } from '@/common/logger';
-import { ControllerInfo } from './controller';
+import { ControllerInfo } from './types';
 import { transformToContext } from './context';
 import { CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY } from './metadata';
 
@@ -29,29 +29,62 @@ export class ControllerModule {
       target,
       router,
       routes,
+      middlewares: controllerMetadata.middlewares || [], // Ensure middlewares are passed through
     };
 
     this.controllers.set(target.name, controllerInfo);
-    logger.debug('[ControllerModule]', `Registered controller ${target.name}`);
+    logger.debug(
+      '[ControllerModule]',
+      `Registered controller ${target.name} with ${
+        controllerInfo.middlewares?.length || 0
+      } middlewares`
+    );
   }
 
   public initializeController(controllerInfo: ControllerInfo): void {
-    const { target, router, routes } = controllerInfo;
+    const { target, router, routes, middlewares } = controllerInfo;
     const instance = di.resolve(target) as any;
 
     routes.forEach(route => {
       const { method, path, handlerName, transformer, options } = route;
       const handler = instance[handlerName].bind(instance);
 
-      (router as any)[method](path, (req: Request, res: Response, next: NextFunction) => {
-        if (options?.middlewares) {
-          const allMiddlewares = [...(controllerInfo.middlewares ?? []), ...options.middlewares];
-          console.log(`Middlewares for ${method.toUpperCase()} ${path}:`, allMiddlewares.length);
+      (router as any)[method](path, async (req: Request, res: Response, next: NextFunction) => {
+        const routeMiddlewares = options?.middlewares || [];
+        const allMiddlewares = [...(middlewares || []), ...routeMiddlewares];
 
-          allMiddlewares.forEach(middleware => {
-            middleware(req, res, next);
-          });
+        logger.debug(
+          '[ControllerModule]',
+          `Applying ${allMiddlewares.length} middlewares for ${method.toUpperCase()} ${path} in ${
+            target.name
+          }`
+        );
+
+        if (allMiddlewares.length > 0) {
+          // Chain middlewares together
+          const middlewareChain = allMiddlewares.reduceRight(
+            (nextMiddleware, currentMiddleware) => {
+              return (err?: any) => {
+                if (err) return next(err);
+                logger.debug(
+                  '[ControllerModule]',
+                  `Executing middleware for ${method.toUpperCase()} ${path}`
+                );
+                currentMiddleware(req, res, nextMiddleware);
+              };
+            },
+            (err?: any) => {
+              if (err) return next(err);
+              return transformToContext(req, res, next, handler, {
+                ...(options ?? {}),
+                transformer,
+              });
+            }
+          );
+
+          return middlewareChain();
         }
+
         return transformToContext(req, res, next, handler, { ...(options ?? {}), transformer });
       });
 
