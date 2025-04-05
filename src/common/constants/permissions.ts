@@ -1,6 +1,8 @@
 export const permissionSchemes = {
   posts: ['read', 'write'],
   comments: ['read', 'write'],
+  users: ['read', 'write', 'delete', 'update'],
+  roles: ['read', 'write', 'delete', 'update'],
 } as const;
 
 type PermissionScheme = typeof permissionSchemes;
