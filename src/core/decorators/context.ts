@@ -3,7 +3,8 @@
  * All rights reserved.
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { LoginAuthorityType } from '@/common/constants/permissions';
+import { INextFunction, IRequest, IResponse } from '../interfaces/http';
 
 export interface PaginationParams {
   page?: number;
@@ -14,7 +15,7 @@ export interface PaginationParams {
 
 export interface RouteOptions {
   paginate?: boolean;
-  auth?: boolean;
+  auth?: LoginAuthorityType;
 }
 
 export interface RequestContext<B = any, Q = any, P = any> {
@@ -23,9 +24,9 @@ export interface RequestContext<B = any, Q = any, P = any> {
   params: P;
   pagination?: PaginationParams;
   user?: any;
-  req: Request;
-  res: Response;
-  next: NextFunction;
+  req: IRequest;
+  res: IResponse;
+  next: INextFunction;
 }
 
 export type ContextTransformer<B = any, Q = any, P = any> = (
@@ -43,12 +44,12 @@ export function createContextTransformer<B = any, Q = any, P = any>(
 }
 
 export async function withContext<B = any, Q = any, P = any>(
-  req: Request,
-  res: Response,
-  next: NextFunction,
+  req: IRequest,
+  res: IResponse,
+  next: INextFunction,
   handler: RouteHandlerContext<B, Q, P>,
   options?: RouteOptions
-): Promise<void> {
+) {
   try {
     // Initialize context
     const context: RequestContext<B, Q, P> = {
@@ -83,14 +84,14 @@ export async function withContext<B = any, Q = any, P = any>(
 
     // Handle paginated response
     if (options?.paginate && Array.isArray(result)) {
-      res.json({
+      return res.json({
         data: result,
         pagination: context.pagination,
       });
     } else {
-      res.json(result);
+      return res.json(result);
     }
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
