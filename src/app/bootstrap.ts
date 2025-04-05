@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2025 Felix Orinda
+ * All rights reserved.
+ */
+
 import 'reflect-metadata';
 import { di } from '@/core/di/container';
 import { AppModule } from './module';

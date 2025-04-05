@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2024 Felix Orinda
+ * All rights reserved.
+ */
+
 import { Application } from 'express';
 import express from 'express';
 import { AppSetup } from './app';

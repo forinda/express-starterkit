@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2025 Felix Orinda
+ * All rights reserved.
+ */
+
 import { ConfigService } from '@/common/config';
 import { LoggerService } from '@/common/logger';
 import { Singleton } from '@/core/di/container';
