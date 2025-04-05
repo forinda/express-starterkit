@@ -1,4 +1,9 @@
-import { ControllerInfo } from './controller';
+/**
+ * Copyright (c) 2025 Felix Orinda
+ * All rights reserved.
+ */
+
+import { ControllerInfo, CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY } from './controller';
 import { LoggerService } from '@/common/logger';
 import { di } from '../di/container';
 import { Router } from 'express';
@@ -29,11 +34,13 @@ export abstract class BaseControllerModule {
     this.logger = di.get<LoggerService>(Symbol.for('LoggerService'));
   }
 
-  protected initializeController(controller: any, metadata: any): ControllerInfo {
+  protected initializeController(controller: any): ControllerInfo {
     const router = Router({ mergeParams: true });
+    const controllerMetadata = Reflect.getMetadata(CONTROLLER_METADATA_KEY, controller);
+    const routes = Reflect.getMetadata(ROUTES_METADATA_KEY, controller.prototype) || [];
 
     // Set up routes
-    metadata.routes.forEach((route: any) => {
+    routes.forEach((route: any) => {
       const handler = async (req: any, res: any, next: any) => {
         try {
           const controllerInstance = di.get<typeof controller>(Symbol.for(controller.name));
@@ -50,8 +57,7 @@ export abstract class BaseControllerModule {
         }
       };
 
-      const middleware = [...(metadata.middlewares || []), ...(route.middleware || [])];
-      (router[route.method as keyof Router] as Function)(route.path, ...middleware, handler);
+      (router[route.method as keyof Router] as Function)(route.path, handler);
       this.logger.debug(
         this.constructor.name,
         `Registered route ${route.method.toUpperCase()} ${route.path} for ${controller.name}`
@@ -61,10 +67,9 @@ export abstract class BaseControllerModule {
     return {
       target: controller,
       router,
-      path: metadata.basePath,
-      basePath: metadata.basePath,
-      routes: metadata.routes,
-      middlewares: metadata.middlewares,
+      path: controllerMetadata.basePath,
+      basePath: controllerMetadata.basePath,
+      routes,
       version: 'v1',
     };
   }

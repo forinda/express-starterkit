@@ -33,7 +33,7 @@ export class UsersControllerModule extends BaseControllerModule {
         throw new Error(`No metadata found for controller ${controller.name}`);
       }
 
-      return this.initializeController(controller, controllerMetadata);
+      return this.initializeController(controller);
     });
 
     this.logger.debug(
