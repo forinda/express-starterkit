@@ -12,14 +12,14 @@ import { Singleton } from '@/core/di/container';
 export class UsersControllerModule extends BaseControllerModule {
   constructor() {
     super();
-    this.logger.debug('[UsersControllerModule] Initializing users controller module');
+    this.logger.debug('UsersControllerModule', 'Initializing users controller module');
     this.initializeControllers();
   }
 
   private initializeControllers() {
     const metadata = Reflect.getMetadata(CONTROLLER_MODULE_KEY, UsersControllerModule);
     if (!metadata) {
-      this.logger.error('[UsersControllerModule] No metadata found for users controller module');
+      this.logger.error('UsersControllerModule', 'No metadata found for users controller module');
       throw new Error('No metadata found for users controller module');
     }
 
@@ -27,7 +27,8 @@ export class UsersControllerModule extends BaseControllerModule {
       const controllerMetadata = Reflect.getMetadata(CONTROLLER_METADATA_KEY, controller);
       if (!controllerMetadata) {
         this.logger.error(
-          `[UsersControllerModule] No metadata found for controller ${controller.name}`
+          'UsersControllerModule',
+          `No metadata found for controller ${controller.name}`
         );
         throw new Error(`No metadata found for controller ${controller.name}`);
       }
@@ -35,7 +36,10 @@ export class UsersControllerModule extends BaseControllerModule {
       return this.initializeController(controller, controllerMetadata);
     });
 
-    this.logger.debug(`[UsersControllerModule] Initialized ${this.controllers.length} controllers`);
+    this.logger.debug(
+      'UsersControllerModule',
+      `Initialized ${this.controllers.length} controllers`
+    );
   }
 
   getControllers(): ControllerInfo[] {

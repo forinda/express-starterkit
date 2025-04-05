@@ -40,7 +40,7 @@ export class SocketService {
 
     // Handle server-wide events
     this.io.on('error', (error: Error) => {
-      this.logger.error('Socket.IO server error:', error);
+      this.logger.error('SocketService', `Socket.IO server error: ${error.message}`);
     });
   }
 
@@ -49,13 +49,7 @@ export class SocketService {
    * @param socket Socket instance
    */
   private handleConnection(socket: Socket): void {
-    this.logger.info('New Socket.IO connection established', {
-      id: socket.id,
-      handshake: {
-        address: socket.handshake.address,
-        headers: socket.handshake.headers,
-      },
-    });
+    this.logger.info('SocketService', `New Socket.IO connection established - ID: ${socket.id}`);
 
     // Handle custom events
     socket.on('message', (data: any) => {
@@ -78,7 +72,7 @@ export class SocketService {
    * @param data Message data
    */
   private handleMessage(socket: Socket, data: any): void {
-    this.logger.debug('Received Socket.IO message:', { socketId: socket.id, data });
+    this.logger.debug('SocketService', `Received Socket.IO message from ${socket.id}`);
     // Broadcast the message to all connected clients except the sender
     socket.broadcast.emit('message', {
       from: socket.id,
@@ -92,10 +86,10 @@ export class SocketService {
    * @param reason Disconnection reason
    */
   private handleDisconnect(socket: Socket, reason: string): void {
-    this.logger.info('Socket.IO connection closed', {
-      socketId: socket.id,
-      reason,
-    });
+    this.logger.info(
+      'SocketService',
+      `Socket.IO connection closed - ID: ${socket.id}, Reason: ${reason}`
+    );
   }
 
   /**
@@ -104,10 +98,7 @@ export class SocketService {
    * @param error Error object
    */
   private handleError(socket: Socket, error: Error): void {
-    this.logger.error('Socket.IO error:', {
-      socketId: socket.id,
-      error,
-    });
+    this.logger.error('SocketService', `Socket.IO error on ${socket.id}: ${error.message}`);
   }
 
   /**
@@ -120,7 +111,7 @@ export class SocketService {
 
     return new Promise(resolve => {
       this.io!.close(() => {
-        this.logger.info('Socket.IO server stopped');
+        this.logger.info('SocketService', 'Socket.IO server stopped');
         resolve();
       });
     });

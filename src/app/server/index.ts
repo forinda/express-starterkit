@@ -31,8 +31,11 @@ export class ServerModule {
 
     // Start HTTP server
     this.httpServer.listen(serverConfig.port, () => {
-      this.logger.info(`HTTP server is running on port ${serverConfig.port}`);
-      this.logger.info(`Socket.IO server is running on ws://localhost:${serverConfig.port}`);
+      this.logger.info('ServerModule', `HTTP server is running on port ${serverConfig.port}`);
+      this.logger.info(
+        'ServerModule',
+        `Socket.IO server is running on ws://localhost:${serverConfig.port}`
+      );
     });
   }
 
@@ -45,7 +48,7 @@ export class ServerModule {
       this.socketService.close().then(() => {
         // Close HTTP server
         this.httpServer.close(() => {
-          this.logger.info('HTTP server stopped');
+          this.logger.info('ServerModule', 'HTTP server stopped');
           resolve();
         });
       });

@@ -24,7 +24,7 @@ export class Api {
   constructor() {
     this.logger = resolve(LoggerService);
     this.apiModule = resolve(ApiV1Module);
-    this.logger.info('Api', `Initializing API v${this.version}`);
+    this.logger.info('Api', `Initializing API ${this.version}`);
   }
 
   private mountControllers() {

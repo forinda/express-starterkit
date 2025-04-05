@@ -51,7 +51,7 @@ export abstract class BaseControllerModule {
       };
 
       const middleware = [...(metadata.middlewares || []), ...(route.middleware || [])];
-      router[route.method](route.path, ...middleware, handler);
+      (router[route.method as keyof Router] as Function)(route.path, ...middleware, handler);
       this.logger.debug(
         this.constructor.name,
         `Registered route ${route.method.toUpperCase()} ${route.path} for ${controller.name}`

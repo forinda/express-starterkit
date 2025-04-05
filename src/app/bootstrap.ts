@@ -19,14 +19,14 @@ async function bootstrap() {
     // Handle process termination
     process.on('SIGTERM', async () => {
       const logger = di.resolve(LoggerService);
-      logger.info('SIGTERM received. Shutting down gracefully...');
+      logger.info('Bootstrap', 'SIGTERM received. Shutting down gracefully...');
       await serverModule.stop();
       process.exit(0);
     });
 
     process.on('SIGINT', async () => {
       const logger = di.resolve(LoggerService);
-      logger.info('SIGINT received. Shutting down gracefully...');
+      logger.info('Bootstrap', 'SIGINT received. Shutting down gracefully...');
       await serverModule.stop();
       process.exit(0);
     });
