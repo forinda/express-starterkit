@@ -3,13 +3,8 @@
  * All rights reserved.
  */
 
+import { GetUsersRepository, SortField, GetUsersQuery } from '../repositories/get-users-repository';
 import { GetUsersEntity } from '../entities/get-users-entity';
-import {
-  GetUsersRepository,
-  GetUsersQuery,
-  GetUsersResult,
-  GetUsersPagination,
-} from '../repositories/get-users.repository';
 import { Singleton } from '@/core/di/container';
 import { inject } from 'inversify';
 
@@ -22,7 +17,11 @@ export class GetUsersService {
     private readonly getUsersRepository: GetUsersRepository
   ) {}
 
-  async execute(query: GetUsersQuery, pagination: GetUsersPagination): Promise<GetUsersResult> {
-    return this.getUsersRepository.findAll(query, pagination);
+  async execute(
+    query?: GetUsersQuery,
+    pagination?: { page: number; limit: number },
+    sort?: SortField[]
+  ): Promise<GetUsersEntity[]> {
+    return this.getUsersRepository.findAll(query, pagination, sort);
   }
 }

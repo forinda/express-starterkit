@@ -14,8 +14,11 @@ export class GetUsersController {
     querySchema: getUsersQuerySchema,
   })
   async getUsers(context: ApiRequestContext) {
-    const { query, pagination = { page: 1, limit: 10 } } = context;
-    const result = await this.getUsersService.execute(query, pagination);
+    const { query } = context;
+    const { sort, q, page, limit } = query;
+
+    const result = await this.getUsersService.execute({ q }, { page, limit }, sort);
+
     return formatResponse(context.res, {
       message: 'Users fetched successfully',
       data: result,
