@@ -1,4 +1,3 @@
-import { injectable } from 'inversify';
 import { autoBind } from './bind';
 
 /**
