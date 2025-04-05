@@ -34,6 +34,7 @@ export function Singleton<T>() {
 
     // Bind the class as a singleton
     di.bind<T>(token).to(target).inSingletonScope();
+    // di.bind<T>(target).toSelf();
 
     return target;
   };

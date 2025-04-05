@@ -1,6 +1,7 @@
 import { LoggerOptions, LogLevel } from '../logger';
 import { injectable } from 'inversify';
 import { autoBind } from '@/core/decorators/bind';
+import { Singleton } from '@/core/di/container';
 
 export interface DatabaseConfig {
   host: string;
@@ -36,13 +37,39 @@ export interface AppConfig {
   swagger: SwaggerConfig;
 }
 
-@injectable()
+export interface DbConfig {
+  host: string;
+  port: number;
+  user: string;
+  password: string;
+  database: string;
+}
+
 @autoBind()
+@Singleton()
 export class ConfigService {
   private config: AppConfig;
+  private dbConfig: DbConfig;
+  private serverConfig: ServerConfig;
 
   constructor() {
     this.config = this.loadConfig();
+    this.dbConfig = {
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '5432'),
+      user: process.env.DB_USER || 'postgres',
+      password: process.env.DB_PASSWORD || 'postgres',
+      database: process.env.DB_NAME || 'di_decos',
+    };
+    this.serverConfig = {
+      port: parseInt(process.env.PORT || '3000'),
+      host: process.env.HOST || 'localhost',
+      cors: {
+        origin: process.env.CORS_ORIGIN || '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+      },
+    };
   }
 
   private loadConfig(): AppConfig {
@@ -96,7 +123,7 @@ export class ConfigService {
   }
 
   getServerConfig(): ServerConfig {
-    return this.config.server;
+    return this.serverConfig;
   }
 
   getSwaggerConfig(): SwaggerConfig {
@@ -117,5 +144,9 @@ export class ConfigService {
 
   isTest(): boolean {
     return this.config.environment === 'test';
+  }
+
+  getDbConfig(): DbConfig {
+    return this.dbConfig;
   }
 }

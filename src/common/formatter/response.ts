@@ -39,7 +39,7 @@ export function formatResponse<T>(
 
 export function formatError(
   res: IResponse,
-  error: Error | ApiError,
+  error: any,
   status: HttpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR
 ) {
   const apiError =

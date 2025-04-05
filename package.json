@@ -28,6 +28,7 @@
     "inversify": "^6.0.2",
     "inversify-express-utils": "^6.4.3",
     "morgan": "^1.10.0",
+    "nanoid": "^5.1.5",
     "pg": "^8.14.1",
     "reflect-metadata": "^0.2.2",
     "socket.io": "^4.8.1",
