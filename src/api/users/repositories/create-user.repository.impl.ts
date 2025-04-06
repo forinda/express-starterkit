@@ -16,6 +16,8 @@ export class CreateUserRepositoryImpl implements CreateUserRepository {
         id: nanoid(),
         name: user.name,
         email: user.email,
+        gender: user.gender,
+        password: user.password,
         created_at: new Date(),
         updated_at: new Date(),
       })

@@ -1,6 +1,6 @@
+import { ConfigService } from '@/common/config';
 import { compare, hash } from 'bcryptjs';
 import { sign, verify } from 'jsonwebtoken';
-import { ConfigService } from '../config/config.service';
 
 export class AuthUtils {
   constructor(private config: ConfigService) {}
@@ -14,10 +14,10 @@ export class AuthUtils {
   }
 
   generateToken(payload: Record<string, any>): string {
-    return sign(payload, this.config.jwtSecret, { expiresIn: '1h' });
+    return sign(payload, this.config.getJWTConfig().secret, { expiresIn: '1h' });
   }
 
   verifyToken(token: string): Record<string, any> {
-    return verify(token, this.config.jwtSecret) as Record<string, any>;
+    return verify(token, this.config.getJWTConfig().secret) as Record<string, any>;
   }
 }

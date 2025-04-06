@@ -11,14 +11,9 @@ export class HealthControllerModule extends ControllerModule {
   constructor() {
     super();
     this.logger = di.get<LoggerService>(Symbol.for('LoggerService'));
-    this.logger.debug('HealthControllerModule', 'Initializing health controller module');
+    this.logger.debug('[HealthControllerModule]', 'Initializing health controller module');
 
     // Register controllers
     this.registerController(HealthController);
   }
-}
-
-export function initializeHealthModule() {
-  // Register controllers
-  di.get<HealthController>(Symbol.for('HealthController'));
 }

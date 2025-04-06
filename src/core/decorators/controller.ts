@@ -9,6 +9,7 @@ import { LoggerService } from '@/common/logger';
 import { ContextTransformer } from './context';
 import { CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY } from './metadata';
 import { MethodProps } from '../context/request';
+import { injectable } from 'inversify';
 
 // Initialize logger
 const logger = new LoggerService();
@@ -41,6 +42,7 @@ type ControllerOptions = {
 
 export function Controller(basePath: string = '/', options?: ControllerOptions) {
   return function (target: any) {
+    injectable()(target); // Ensure the class is injectable
     logger.debug('[Controller]', `Registering ${target.name} at path ${basePath}`);
 
     // Normalize base path

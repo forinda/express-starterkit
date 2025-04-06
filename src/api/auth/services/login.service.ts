@@ -10,9 +10,9 @@ export interface LoginDto {
 @injectable()
 export class LoginService {
   constructor(
-    @inject(Symbol.for('FindByEmailRepository'))
+    @inject(FindByEmailRepository)
     private findByEmailRepository: FindByEmailRepository,
-    @inject(Symbol.for('AuthUtils')) private authUtils: AuthUtils
+    @inject(AuthUtils) private authUtils: AuthUtils
   ) {}
 
   async execute(loginData: LoginDto) {

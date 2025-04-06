@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { ApiRequestContext } from '@/core/context/request';
 import { formatResponse } from '@/core/utils/response';
 import { RegisterService } from '../services/register.service';
+import { Singleton } from '@/core/di/container';
 
 const registerSchema = z.object({
   name: z.string().min(1),
@@ -14,9 +15,8 @@ const registerSchema = z.object({
 });
 
 @Controller('/auth')
-@injectable()
 export class RegisterController {
-  constructor(@inject(Symbol.for('RegisterService')) private registerService: RegisterService) {}
+  constructor(@inject(RegisterService) private registerService: RegisterService) {}
 
   @Post('/register', { bodySchema: registerSchema })
   async register(context: ApiRequestContext<RegisterDto>) {

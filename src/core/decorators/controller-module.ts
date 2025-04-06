@@ -15,7 +15,7 @@ const logger = new LoggerService();
 export class ControllerModule {
   private controllers: Map<string, ControllerInfo> = new Map();
 
-  public registerController(target: any): void {
+  public registerController(target: any) {
     const controllerMetadata = Reflect.getMetadata(CONTROLLER_METADATA_KEY, target);
     const routes = Reflect.getMetadata(ROUTES_METADATA_KEY, target.prototype) || [];
 
@@ -39,6 +39,7 @@ export class ControllerModule {
         controllerInfo.middlewares?.length || 0
       } middlewares`
     );
+    return this;
   }
 
   public initializeController(controllerInfo: ControllerInfo): void {

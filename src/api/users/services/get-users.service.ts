@@ -7,13 +7,12 @@ import { GetUsersRepository, SortField, GetUsersQuery } from '../repositories/ge
 import { GetUsersEntity } from '../entities/get-users-entity';
 import { Singleton } from '@/core/di/container';
 import { inject } from 'inversify';
-
-export const GetUsersRepositoryToken = Symbol.for('GetUsersRepository');
+import { GetUsersRepositoryImpl } from '../repositories/get-users.repository.impl';
 
 @Singleton()
 export class GetUsersService {
   constructor(
-    @inject(GetUsersRepositoryToken)
+    @inject(GetUsersRepositoryImpl)
     private readonly getUsersRepository: GetUsersRepository
   ) {}
 

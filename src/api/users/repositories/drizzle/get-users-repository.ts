@@ -1,9 +1,9 @@
 import { GetUsersRepository, SortField, GetUsersQuery } from '../get-users-repository';
 import { GetUsersEntity } from '../../entities/get-users-entity';
 import { db } from '@/core/db';
-import { users } from '@/core/db/schema/users';
-import { and, ilike, or, asc, desc, eq } from 'drizzle-orm';
-import { PgSelect } from 'drizzle-orm/pg-core';
+import { users, UserSelectType } from '@/core/db/schema/users';
+import { and, ilike, or, asc, desc, eq, AnyColumn } from 'drizzle-orm';
+import { PgSelect, PgSelectBase } from 'drizzle-orm/pg-core';
 
 export class DrizzleGetUsersRepository implements GetUsersRepository {
   async findAll(
@@ -14,7 +14,7 @@ export class DrizzleGetUsersRepository implements GetUsersRepository {
     const { q, name, email, ...otherFields } = query || {};
     const { page = 1, limit = 10 } = pagination || {};
 
-    let queryBuilder: PgSelect = db.select().from(users);
+    let queryBuilder: PgSelect = db.select().from(users) as unknown as PgSelect;
 
     // Apply search conditions
     const conditions = [];
@@ -34,7 +34,7 @@ export class DrizzleGetUsersRepository implements GetUsersRepository {
     // Apply other fields if they match user columns
     Object.entries(otherFields).forEach(([key, value]) => {
       if (users[key as keyof typeof users]) {
-        conditions.push(eq(users[key as keyof typeof users], value));
+        conditions.push(eq(users[key as keyof UserSelectType], value));
       }
     });
 
@@ -46,7 +46,7 @@ export class DrizzleGetUsersRepository implements GetUsersRepository {
     if (sort?.length) {
       const sortFields = sort
         .map(({ field, order }) => {
-          const column = users[field as keyof typeof users];
+          const column = users[field as keyof typeof users] as AnyColumn | undefined;
           if (!column) return null;
           return order === 'desc' ? desc(column) : asc(column);
         })
@@ -68,6 +68,6 @@ export class DrizzleGetUsersRepository implements GetUsersRepository {
       email: user.email,
       created_at: user.created_at,
       updated_at: user.updated_at,
-    }));
+    })) as unknown as GetUsersEntity[];
   }
 }

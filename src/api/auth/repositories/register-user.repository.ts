@@ -1,9 +1,9 @@
-import { injectable } from 'inversify';
 import { db } from '@/config/database';
 import { UserInsertType, users, UserSelectType } from '@/core/db/schema/users';
 import { nanoid } from 'nanoid';
+import { Singleton } from '@/core/di/container';
 
-@injectable()
+@Singleton()
 export class RegisterUserRepository {
   async execute(
     user: Omit<UserInsertType, 'id' | 'created_at' | 'updated_at'>

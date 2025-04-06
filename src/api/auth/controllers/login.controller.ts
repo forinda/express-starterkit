@@ -13,11 +13,10 @@ const loginSchema = z.object({
 });
 
 @Controller('/auth', { middlewares: [] })
-@injectable()
 export class LoginController {
   constructor(
-    @inject(Symbol.for('LoginService')) private loginService: LoginService,
-    @inject(Symbol.for('ConfigService')) private config: ConfigService
+    @inject(LoginService) private loginService: LoginService,
+    @inject(ConfigService) private config: ConfigService
   ) {}
 
   @Post('/login', { bodySchema: loginSchema })

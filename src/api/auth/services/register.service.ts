@@ -1,7 +1,8 @@
-import { injectable, inject } from 'inversify';
+import { inject } from 'inversify';
 import { FindByEmailRepository } from '../repositories/find-by-email.repository';
 import { RegisterUserRepository } from '../repositories/register-user.repository';
 import { AuthUtils } from '@/core/utils/auth.utils';
+import { Singleton } from '@/core/di/container';
 
 export interface RegisterDto {
   name: string;
@@ -10,14 +11,14 @@ export interface RegisterDto {
   gender?: 'Male' | 'Female' | 'Other';
 }
 
-@injectable()
+@Singleton()
 export class RegisterService {
   constructor(
-    @inject(Symbol.for('FindByEmailRepository'))
+    @inject(FindByEmailRepository)
     private findByEmailRepository: FindByEmailRepository,
-    @inject(Symbol.for('RegisterUserRepository'))
+    @inject(RegisterUserRepository)
     private registerUserRepository: RegisterUserRepository,
-    @inject(Symbol.for('AuthUtils')) private authUtils: AuthUtils
+    @inject(AuthUtils) private authUtils: AuthUtils
   ) {}
 
   async execute(userData: RegisterDto) {
