@@ -1,5 +1,5 @@
-import { HttpStatus, HttpStatusCode } from "@/core/constants/status-codes";
-import { ZodError } from "zod";
+import { HttpStatus, HttpStatusCode } from '@/core/constants/status-codes';
+import { ZodError } from 'zod';
 
 export interface ErrorMetadata {
   [key: string]: any;
@@ -35,7 +35,7 @@ export class ApiError extends Error {
       message: this.message,
       statusCode: this.statusCode,
       metadata: this.metadata,
-      stack: this.stack
+      stack: this.stack,
     };
   }
 
@@ -44,13 +44,9 @@ export class ApiError extends Error {
   }
 
   static fromError(error: Error): ApiError {
-    return new ApiError(
-      error.message,
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      undefined,
-      false,
-      { stack: error.stack }
-    );
+    return new ApiError(error.message, HttpStatus.INTERNAL_SERVER_ERROR, undefined, false, {
+      stack: error.stack,
+    });
   }
 
   static fromZodError(
@@ -58,18 +54,14 @@ export class ApiError extends Error {
     statusCode: HttpStatusCode = HttpStatus.BAD_REQUEST,
     metadata?: ErrorMetadata
   ): ApiError {
-
-    const details = error.errors.reduce((acc, curr) => {
-      acc[curr.path.join('.')] = curr.message;
-      return acc;
-    }, {} as Record<string, any>);
-
-    return new ApiError(
-      error.message,
-      statusCode,
-      metadata,
-      false,
-      details
+    const details = error.errors.reduce(
+      (acc, curr) => {
+        acc[curr.path.join('.')] = curr.message;
+        return acc;
+      },
+      {} as Record<string, any>
     );
+
+    return new ApiError(error.message, statusCode, metadata, false, details);
   }
 }

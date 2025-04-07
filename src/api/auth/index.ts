@@ -4,11 +4,6 @@ import { LoggerService } from '@/common/logger';
 import { di } from '@/core/di/container';
 import { LoginController } from './controllers/login.controller';
 import { RegisterController } from './controllers/register.controller';
-import { FindByEmailRepository } from './repositories/find-by-email.repository';
-import { RegisterUserRepository } from './repositories/register-user.repository';
-import { AuthUtils } from '@/core/utils/auth.utils';
-import { LoginService } from './services/login.service';
-import { RegisterService } from './services/register.service';
 
 @Singleton()
 export class AuthControllerModule extends ControllerModule {

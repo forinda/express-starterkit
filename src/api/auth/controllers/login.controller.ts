@@ -1,4 +1,4 @@
-import { injectable, inject } from 'inversify';
+import { inject } from 'inversify';
 import { Controller, Post } from '@/core/decorators/controller';
 import { LoginDto } from '../services/login.service';
 import { z } from 'zod';

@@ -7,7 +7,7 @@ import { ConfigService } from '@/common/config';
 import { LoggerService } from '@/common/logger';
 import { Singleton } from '@/core/di/container';
 import { createServer } from 'http';
-import { inject, injectable } from 'inversify';
+import { inject } from 'inversify';
 import { Server as SocketServer, Socket } from 'socket.io';
 
 @Singleton()
@@ -34,7 +34,7 @@ export class SocketService {
         credentials: true,
       },
     });
-    this.logger.info('SocketService', 'Socket.IO server initialized');
+    // this.logger.info('SocketService', 'Socket.IO server initialized');
     this.setupEventHandlers();
     this.logger.info('SocketService', 'Socket.IO server initialized');
   }

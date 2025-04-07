@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ControllerModule } from './controller-module';
 import { Controller, Get } from './controller';
 import { di } from '../di/container';

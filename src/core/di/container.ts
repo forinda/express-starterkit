@@ -24,7 +24,7 @@ function getToken<T>(target: new (...args: any[]) => T): symbol {
  */
 export function Singleton<T>() {
   return function (target: new (...args: any[]) => T) {
-    console.debug(`[Singleton] Registering ${target.name} as singleton`);
+    // console.debug(`[Singleton] Registering ${target.name} as singleton`);
 
     // Make the class injectable
     injectable()(target);
@@ -64,6 +64,6 @@ export function Injectable<T>() {
  * Helper to resolve a service from the container
  */
 export function resolve<T>(target: new (...args: any[]) => T): T {
-  console.debug(`[Container] Resolving ${target.name}`);
+  // console.debug(`[Container] Resolving ${target.name}`);
   return di.get<T>(getToken(target));
 }

@@ -3,7 +3,6 @@
  * All rights reserved.
  */
 
-import { LoginAuthorityType } from '@/common/constants/permissions';
 import {
   ApiRequestContext,
   INextFunction,

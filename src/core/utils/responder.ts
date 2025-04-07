@@ -8,7 +8,7 @@ import { IResponse } from '../context/request';
 
 export interface HttpResponse<T = any> {
   message?: string;
-  data?: any;
+  data?: T;
   statusCode: HttpStatusCode;
 }
 

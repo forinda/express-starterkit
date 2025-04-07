@@ -69,10 +69,10 @@ export const HttpStatus = {
   INSUFFICIENT_STORAGE: 507,
   LOOP_DETECTED: 508,
   NOT_EXTENDED: 510,
-  NETWORK_AUTHENTICATION_REQUIRED: 511
+  NETWORK_AUTHENTICATION_REQUIRED: 511,
 } as const;
-export type HttpStatusCode = typeof HttpStatus[keyof typeof HttpStatus];
+export type HttpStatusCode = (typeof HttpStatus)[keyof typeof HttpStatus];
 export type HttpStatusCodeName = keyof typeof HttpStatus;
 export type HttpStatusCodeDescription = {
   [key in HttpStatusCode]: string;
-} 
+};

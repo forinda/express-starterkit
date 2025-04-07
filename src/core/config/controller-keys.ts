@@ -1,3 +1,3 @@
 export const CONTROLLER_KEYS = {
   INJECTED_CONTROLLER: Symbol.for('BS:INJECTED_CONTROLLER'),
-}
+};

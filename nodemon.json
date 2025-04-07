@@ -1,14 +1,14 @@
 {
-    "watch": ["./src/**/*.ts"],
-    "ext": "js,ts",
-    "ignore": ["dist/**/*.spec.js", "dist/**/*.test.js"],
-    "exec": "ts-node --project tsconfig.json ./src/index.ts",
-    "execMap": {
-        "ts": "ts-node --project tsconfig.json"
-    },
-    "env": {
-        "NODE_ENV": "development"
-    },
-    "restartable": "rs",
-    "verbose": true
-  }
+  "watch": ["./src/**/*.ts"],
+  "ext": "js,ts",
+  "ignore": ["dist/**/*.spec.js", "dist/**/*.test.js"],
+  "exec": "ts-node --project tsconfig.json ./src/index.ts",
+  "execMap": {
+    "ts": "ts-node --project tsconfig.json"
+  },
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "restartable": "rs",
+  "verbose": true
+}

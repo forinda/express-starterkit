@@ -1,11 +1,11 @@
-import { series, task, TaskFunction } from 'gulp';
+import { series, task } from 'gulp';
 import clean from './tasks/clean';
 import build from './tasks/build';
 import migrate from './tasks/migrate';
 import watch from './tasks/watch';
 
 // Define task types
-type GulpTask = TaskFunction | TaskFunction[];
+// type GulpTask = TaskFunction | TaskFunction[];
 
 // Define task dependencies
 task('clean', clean);

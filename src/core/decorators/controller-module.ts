@@ -33,12 +33,6 @@ export class ControllerModule {
     };
 
     this.controllers.set(target.name, controllerInfo);
-    logger.debug(
-      '[ControllerModule]',
-      `Registered controller ${target.name} with ${
-        controllerInfo.middlewares?.length || 0
-      } middlewares`
-    );
     return this;
   }
 
@@ -89,10 +83,10 @@ export class ControllerModule {
         return transformToContext(req, res, next, handler, { ...(options ?? {}), transformer });
       });
 
-      logger.debug(
-        '[ControllerModule]',
-        `Initialized route ${method.toUpperCase()} ${path} for ${target.name}.${handlerName}`
-      );
+      // logger.debug(
+      //   '[ControllerModule]',
+      //   `Initialized route ${method.toUpperCase()} ${path} for ${target.name}.${handlerName}`
+      // );
     });
   }
 

@@ -18,9 +18,9 @@ import { ApiModule, API_MODULE_KEY } from '@/core/decorators/api-module';
 })
 @Singleton()
 export class ApiV1Module {
-  private controllers: ControllerInfo[] = [];
+  private _controllers: ControllerInfo[] = [];
   private logger: LoggerService;
-  private controllerModules: ControllerModule[];
+  private _controller_modules: ControllerModule[];
 
   constructor() {
     this.logger = di.get<LoggerService>(Symbol.for('LoggerService'));
@@ -34,25 +34,25 @@ export class ApiV1Module {
     }
 
     // Initialize controller modules
-    this.controllerModules = metadata.modules.map((Module: new () => ControllerModule) => {
+    this._controller_modules = metadata.modules.map((Module: new () => ControllerModule) => {
       this.logger.debug('ApiV1Module', `Resolving module ${Module.name}`);
       return di.get<ControllerModule>(Symbol.for(Module.name));
     });
 
     // Collect controllers from all modules
-    this.controllerModules.forEach(module => {
-      this.logger.debug('ApiV1Module', `Loading controllers from ${module.constructor.name}`);
-      this.controllers.push(...module.getAllControllers());
+    this._controller_modules.forEach(module => {
+      // this.logger.debug('ApiV1Module', `Loading controllers from ${module.constructor.name}`);
+      this._controllers.push(...module.getAllControllers());
     });
 
-    this.logger.debug('ApiV1Module', `Loaded ${this.controllers.length} controllers`);
+    // this.logger.debug('ApiV1Module', `Loaded ${this.controllers.length} controllers`);
   }
 
-  getControllers(): ControllerInfo[] {
-    return this.controllers;
+  get controllers(): ControllerInfo[] {
+    return this._controllers;
   }
 
-  getControllerModules(): ControllerModule[] {
-    return this.controllerModules;
+  get controller_modules(): ControllerModule[] {
+    return this._controller_modules;
   }
 }

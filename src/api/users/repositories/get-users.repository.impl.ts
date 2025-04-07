@@ -7,8 +7,7 @@ import {
 import { Singleton } from '@/core/di/container';
 import { db } from '@/core/db';
 import { users } from '@/core/db/schema';
-import { GetUsersEntity } from '../entities/get-users-entity';
-import { and, asc, desc, eq, ilike, or, sql } from 'drizzle-orm';
+import { asc, desc, ilike, or, sql } from 'drizzle-orm';
 
 @Singleton()
 export class GetUsersRepositoryImpl implements GetUsersRepository {

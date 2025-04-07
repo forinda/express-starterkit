@@ -34,7 +34,7 @@ export class ServerModule {
     const port = serverConfig.port;
     const host = serverConfig.host;
     // Initialize Socket.IO
-    this.logger.info('ServerModule', 'Initializing Socket.IO server');
+    // this.logger.info('ServerModule', 'Initializing Socket.IO server');
     this.socketService.initialize(this.httpServer);
 
     // Start HTTP server

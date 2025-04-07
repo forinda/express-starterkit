@@ -4,7 +4,7 @@
  */
 
 import { beforeAll } from 'vitest';
-import { di } from '@/core/di/container';
+// import { di } from '@/core/di/container';
 
 // Setup test environment
 beforeAll(() => {

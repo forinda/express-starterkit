@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { di, Singleton, Injectable, resolve } from './container';
 
 describe('Container Decorators', () => {
@@ -27,7 +27,7 @@ describe('Container Decorators', () => {
     });
 
     it('should allow custom token for singleton', () => {
-      const TOKEN = Symbol('TestService');
+      // const TOKEN = Symbol('TestService');
 
       @Singleton()
       class TestService {

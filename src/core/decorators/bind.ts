@@ -1,5 +1,5 @@
 function boundMethod(
-  target: any,
+  _target: any,
   key: string | symbol,
   descriptor: PropertyDescriptor
 ): PropertyDescriptor {

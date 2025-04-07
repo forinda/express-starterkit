@@ -3,9 +3,8 @@
  * All rights reserved.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { Controller, Get, Post, Put, Delete, Patch } from './controller';
-import { Router } from 'express';
 import { CONTROLLER_METADATA_KEY, ROUTES_METADATA_KEY } from './metadata';
 
 describe('Controller Decorators', () => {

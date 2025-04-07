@@ -36,19 +36,19 @@ export class Api {
 
   private mountControllers() {
     // Get controllers from the module
-    const controllers = this.apiModule.getControllers();
+    const controllers = this.apiModule.controllers;
 
     // Mount each controller
     for (const controller of controllers) {
-      const fullPath = `${this.basePath}${controller.basePath}`;
+      // const fullPath = `${this.basePath}${controller.basePath}`;
       this.router.use(controller.basePath, controller.router);
-      this.logger.info('Api', `Mounted controller at ${fullPath}`);
+      // this.logger.info('Api', `Mounted controller at ${fullPath}`);
     }
   }
 
   setup(application: Application) {
     // Initialize controllers in the module
-    const controllerModules = this.apiModule.getControllerModules();
+    const controllerModules = this.apiModule.controller_modules;
     controllerModules.forEach((module: ControllerModule) => {
       const controllers = module.getAllControllers();
       controllers.forEach((controller: ControllerInfo) => {

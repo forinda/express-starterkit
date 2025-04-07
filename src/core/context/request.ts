@@ -55,7 +55,7 @@ export interface LoginAuthorityOption {
 export interface ApiRequestContext<
   B = Record<string, any>,
   Q = Record<string, any>,
-  P = Record<string, any>
+  P = Record<string, any>,
 > {
   req: IRequest;
   res: IResponse;

@@ -79,7 +79,7 @@ export class LoggerService {
     };
 
     // Log the current log level
-    this.info('LoggerService', `Logger initialized with level: ${defaultLevel}`);
+    // this.info('LoggerService', `Logger initialized with level: ${defaultLevel}`);
   }
 
   private initializeLogger(): void {
