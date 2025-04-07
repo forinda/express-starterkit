@@ -1,4 +1,4 @@
-import { series, task } from 'gulp';
+import { series, task, TaskFunction } from 'gulp';
 import clean from './tasks/clean';
 import build from './tasks/build';
 import migrate from './tasks/migrate';

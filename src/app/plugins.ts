@@ -6,15 +6,23 @@ import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import { ConfigService } from '@/common/config';
+import { setupSwagger } from '@/docs';
+import { LoggerService } from '@/common/logger';
 
 /**
  * Setup application plugins and middleware
  * @param app Express application
  * @param configService Configuration service
  */
-export function setupPlugins(app: Application, configService: ConfigService): void {
+export function setupPlugins(
+  app: Application,
+  configService: ConfigService,
+  logger: LoggerService
+  // controllerDomainRegistry: ControllerDomainRegistry//
+): void {
   const serverConfig = configService.getServerConfig();
-
+  // Setup swagger documentation
+  setupSwagger(app, configService, logger);
   // Body parser
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

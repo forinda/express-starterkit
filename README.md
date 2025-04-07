@@ -25,20 +25,17 @@ A modern, type-safe, and scalable Node.js API template built with TypeScript, fe
 ### Local Development
 
 1. Clone the repository:
-
    ```bash
    git clone https://github.com/yourusername/di-decos.git
    cd di-decos
    ```
 
 2. Install dependencies:
-
    ```bash
    npm install
    ```
 
 3. Create a `.env` file:
-
    ```bash
    cp .env.example .env
    ```
@@ -51,7 +48,6 @@ A modern, type-safe, and scalable Node.js API template built with TypeScript, fe
 ### Docker Development
 
 1. Build and start the containers:
-
    ```bash
    docker-compose up -d
    ```
@@ -104,7 +100,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## API Endpoints
 
 ### Health Check
-
 - `GET /api/v1/health` - Check service health status
   ```json
   {
@@ -118,5 +113,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   ```
 
 ### Authentication
-
-// ... existing code ...
+// ... existing code ... 

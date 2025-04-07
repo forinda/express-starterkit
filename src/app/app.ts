@@ -37,7 +37,7 @@ export class AppSetup {
     this.logger.info('AppSetup', 'Initializing application...');
 
     // Setup plugins and middleware
-    setupPlugins(this.app, this.configService);
+    setupPlugins(this.app, this.configService, this.logger);
     this.logger.info('AppSetup', 'Plugins setup complete');
 
     // Setup routes

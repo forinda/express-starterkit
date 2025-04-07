@@ -6,7 +6,7 @@
 import { Application } from 'express';
 import express from 'express';
 import { AppSetup } from './app';
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import { autoBind } from '@/core/decorators/bind';
 import { di } from '@/core/di/container';
 import { LoggerService } from '@/common/logger';
