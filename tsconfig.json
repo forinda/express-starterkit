@@ -27,6 +27,6 @@
     "require": ["tsconfig-paths/register"],
     "transpileOnly": true
   },
-  "include": ["src/**/*","tasks/**/*.ts","gulpfile.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

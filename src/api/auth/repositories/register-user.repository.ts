@@ -1,5 +1,5 @@
 import { db } from '@/config/database';
-import { UserInsertType, users, UserSelectType } from '@/core/db/schema/users';
+import { UserInsertType, users, UserSelectType } from '@/db/schema/users';
 import { nanoid } from 'nanoid';
 import { Singleton } from '@/core/di/container';
 

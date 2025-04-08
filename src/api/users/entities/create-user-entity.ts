@@ -1,3 +1,3 @@
-import { UserInsertType } from '@/core/db/schema';
+import { UserInsertType } from '@/db/schema';
 
 export type CreateUserEntity = UserInsertType;

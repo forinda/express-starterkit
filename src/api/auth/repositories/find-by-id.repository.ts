@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { db } from '@/config/database';
-import { users, UserSelectType } from '@/core/db/schema';
+import { users, UserSelectType } from '@/db/schema';
 import { Singleton } from '@/core/di/container';
 
 @Singleton()

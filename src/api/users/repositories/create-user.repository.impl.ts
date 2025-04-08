@@ -1,7 +1,7 @@
 import { CreateUserRepository } from './create-user.repository';
 import { Singleton } from '@/core/di/container';
-import { db } from '@/core/db';
-import { users } from '@/core/db/schema';
+import { db } from '@/db';
+import { users } from '@/db/schema';
 import { CreateUserEntity } from '../entities/create-user-entity';
 import { nanoid } from 'nanoid';
 

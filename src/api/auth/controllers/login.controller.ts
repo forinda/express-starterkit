@@ -6,12 +6,16 @@ import { ApiRequestContext } from '@/core/context/request';
 import { formatResponse } from '@/core/utils/response';
 import { LoginService } from '../services/login.service';
 import { ConfigService } from '@/common/config';
+import { SwaggerTag, SwaggerPath } from '@/core/decorators/swagger.decorator';
+import { zodSchemaToRequestBody } from '@/core/utils/zod-to-swagger';
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
+  rememberMe: z.boolean().optional(),
 });
 
+@SwaggerTag('Authentication', 'Authentication related operations')
 @Controller('/auth', { middlewares: [] })
 export class LoginController {
   constructor(
@@ -19,6 +23,47 @@ export class LoginController {
     @inject(ConfigService) private config: ConfigService
   ) {}
 
+  @SwaggerPath('/auth/login', 'post', {
+    summary: 'Login user',
+    description: 'Authenticate user and return JWT token',
+    tags: ['Authentication'],
+    requestBody: zodSchemaToRequestBody(loginSchema),
+    responses: {
+      '200': {
+        description: 'Login successful',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                message: { type: 'string' },
+                data: {
+                  type: 'object',
+                  properties: {
+                    user: { $ref: '#/components/schemas/users' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      '400': {
+        description: 'Invalid credentials',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                message: { type: 'string' },
+                error: { type: 'string' },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   @Post('/login', { bodySchema: loginSchema })
   async login(context: ApiRequestContext<LoginDto>) {
     const result = await this.loginService.execute(context.body);

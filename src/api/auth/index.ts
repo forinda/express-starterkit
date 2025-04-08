@@ -4,6 +4,7 @@ import { LoggerService } from '@/common/logger';
 import { di } from '@/core/di/container';
 import { LoginController } from './controllers/login.controller';
 import { RegisterController } from './controllers/register.controller';
+import './schemas'; // Import schema registration
 
 @Singleton()
 export class AuthControllerModule extends ControllerModule {

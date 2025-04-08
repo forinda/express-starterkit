@@ -1,7 +1,7 @@
 import { GetUsersRepository, SortField, GetUsersQuery } from '../get-users-repository';
 import { GetUsersEntity } from '../../entities/get-users-entity';
-import { db } from '@/core/db';
-import { users, UserSelectType } from '@/core/db/schema/users';
+import { db } from '@/db';
+import { users, UserSelectType } from '@/db/schema/users';
 import { and, ilike, or, asc, desc, eq, AnyColumn } from 'drizzle-orm';
 import { PgSelect, PgSelectBase } from 'drizzle-orm/pg-core';
 

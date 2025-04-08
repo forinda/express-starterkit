@@ -5,8 +5,8 @@ import {
   GetUsersPagination,
 } from './get-users.repository';
 import { Singleton } from '@/core/di/container';
-import { db } from '@/core/db';
-import { users } from '@/core/db/schema';
+import { db } from '@/db';
+import { users } from '@/db/schema';
 import { asc, desc, ilike, or, sql } from 'drizzle-orm';
 
 @Singleton()
